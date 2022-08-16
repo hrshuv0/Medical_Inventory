@@ -20,9 +20,12 @@ namespace Medical_Inventory.Controllers
 
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString=null)
         {
             var productList = await _productRepository.GetAll(includeProperties:"Category");
+
+            if(searchString is not null)
+                productList = productList.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
 
             return View(productList);
         }
