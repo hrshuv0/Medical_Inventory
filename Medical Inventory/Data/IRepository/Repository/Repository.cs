@@ -1,26 +1,48 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-    public T? GetFirstOrDefault(Expression<Func<T, bool>> filter)
+    private readonly ApplicationDbContext _dbContext;
+    private readonly DbSet<T> _dbSet;
+
+    public Repository(ApplicationDbContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
+        _dbSet = dbContext.Set<T>();
     }
 
-    public IEnumerable<T> GetAll(Expression<Func<T>>? filter = null)
+    public async Task<T?> GetFirstOrDefault(Expression<Func<T, bool>> filter)
     {
-        throw new NotImplementedException();
+        var result = await _dbSet.Where(filter).FirstOrDefaultAsync();
+
+        return result;
     }
 
-    public void Add(T entity)
+    public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? filter = null)
     {
-        throw new NotImplementedException();
+        IQueryable<T> result = _dbSet;
+        
+        if(filter is not null)
+            result = result.Where(filter);
+        
+        return await result.ToListAsync();
+    }
+
+    public async Task Add(T entity)
+    {
+        await _dbSet.AddAsync(entity);
     }
 
     public void Remove(T entity)
     {
-        throw new NotImplementedException();
+        _dbSet.Remove(entity);
+    }
+
+    public async Task Save()
+    {
+        await _dbContext.SaveChangesAsync();
     }
 }

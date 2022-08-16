@@ -1,4 +1,6 @@
 using Medical_Inventory.Data;
+using Medical_Inventory.Data.IRepository;
+using Medical_Inventory.Data.IRepository.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(connectionSting);
 });
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 
 var app = builder.Build();
