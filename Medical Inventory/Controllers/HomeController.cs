@@ -15,7 +15,7 @@ namespace Medical_Inventory.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction(nameof(Index), "Products");
         }
 
         public IActionResult Privacy()

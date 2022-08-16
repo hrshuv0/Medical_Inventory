@@ -11,23 +11,37 @@ public class Repository<T> : IRepository<T> where T : class
     public Repository(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
-        _dbSet = dbContext.Set<T>();
+        // _dbContext.Products!.Include(p => p.Category);
+        
+        _dbSet = _dbContext.Set<T>();
     }
 
-    public async Task<T?> GetFirstOrDefault(Expression<Func<T, bool>> filter)
+    public async Task<T?> GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties=null)
     {
-        var result = await _dbSet.Where(filter).FirstOrDefaultAsync();
+        var result = _dbSet.Where(filter);
+        
+        if (includeProperties is not null)
+        {
+            foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                result = result.Include(property);
+        }
 
-        return result;
+        return await result.FirstOrDefaultAsync();
     }
 
-    public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? filter = null)
+    public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties=null)
     {
         IQueryable<T> result = _dbSet;
         
         if(filter is not null)
             result = result.Where(filter);
-        
+
+        if (includeProperties is not null)
+        {
+            foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                result = result.Include(property);
+        }
+
         return await result.ToListAsync();
     }
 
