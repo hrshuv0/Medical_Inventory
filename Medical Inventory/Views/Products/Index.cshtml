@@ -13,19 +13,26 @@
         <a asp-action="Create" class="btn btn-primary">Create New</a>
     </div>
     <div class="col-4">
-        <form asp-action="Index">
-            <div class="row">
-                <div class="col">
-                    <select asp-for="SelectedCategory" class="form-control text-center" asp-items="Model.CategoryList" id="filterId">
-                        <option selected>All</option>
-                    </select>
-                </div>
-                <div class="col">
-                    <input type="submit" value="filter"/>
-                </div>
-            </div>
+        @* <form asp-action="Index"> *@
+        @*     <div class="row"> *@
+        @*         <div class="col"> *@
+        @*             <select asp-for="SelectedCategory" class="form-control text-center" asp-items="Model.CategoryList" id="filterId"> *@
+        @*                 <option selected>All</option> *@
+        @*             </select> *@
+        @*         </div> *@
+        @*         <div class="col"> *@
+        @*             <input type="submit" value="filter"/> *@
+        @*         </div> *@
+        @*     </div> *@
+        @* *@
+        @* </form> *@
 
-        </form>
+        <div>
+            <select asp-for="SelectedCategory" class="form-control text-center" asp-items="Model.CategoryList" id="filterId" name="filterId">
+                <option selected>All</option>
+            </select>
+
+        </div>
 
     </div>
     <div class="col-4">
@@ -38,7 +45,7 @@
 
     </div>
 </div>
-<table class="table table-bordered">
+<table class="table table-bordered" id="tableId">
     <thead>
     <tr>
         <th>
@@ -53,7 +60,7 @@
         <th>
             Category
         </th>
-        <th></th>
+        @* <th></th> *@
     </tr>
     </thead>
     <tbody>
@@ -72,26 +79,98 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Name)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary" style="width: 100px">Edit</a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info" style="width: 100px">Details</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-warning" style="width: 100px">Delete</a>
-            </td>
+            @* <td> *@
+            @*     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary" style="width: 100px">Edit</a> *@
+            @*     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info" style="width: 100px">Details</a> *@
+            @*     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-warning" style="width: 100px">Delete</a> *@
+            @* </td> *@
         </tr>
     }
     </tbody>
 </table>
 
-
 @section Scripts
 {
     <script>
+    // $("#filterId").change(function (){
+    //     // alert("test alert");
+    //     // let value = $(this).children(":selected").data("filterId");
+        var val = document.getElementById('filterId').value;
+    //     $("#Model.SelectedCategory").value = val;
+        @ViewData["filterValue"] = val;
+    //    
+    //     console.log(@ViewData["filterValue"]);
+    //     // alert(value);
+    // });
+    
     $("#filterId").change(function (){
-        // alert("test alert");
-        let value = $(this).children(":selected").attr("SelectedCategory");
-        console.log(value);
-        // alert(value);
-    });
+        
+        let categoryId = document.getElementById('filterId').value;
+        console.log(categoryId);
+        
+        $.ajax({
+            url:"Products/GetAll?id="+categoryId,
+            method:"GET",
+            success:function (data){
+                updateTable(data.data);
+                // alert(data.data[0])
+                // console.log(data.data)
+                
+            }
+        });
+        
+        function updateTable(data) {
+            let table = document.getElementById('#tableId');
+            let tableBody = document.querySelector('#tableId > tbody');
+            // console.log(tableBody);
+            
+            console.log(data);
+            
+            const request = new XMLHttpRequest();
+            
+            try {
+              const json = JSON.parse(request.responseText);
+              console.log(json);
+              
+              while (tableBody.firstChild){
+                  tableBody.removeChild(tableBody.firstChild);
+              }
+              
+              json.forEach((row) =>{
+                  const tr = document.createElement("tr");
+                  
+                  row.forEach((cell) =>{
+                      const td = document.createElement("td");
+                      td.textContent = cell;
+                      tr.appendChild(td);
+                  });
+                  
+                  tableBody.appendChild(tr);
+                  
+              });
+              
+              alert("done");
+              
+            }
+            catch(e){
+                    alert("failed "+ e);
+                }
+            
+            
+            // for (var i = 0; i < data.length; i++){
+            //         var row = `<tr> 
+            //                     <td>${data[i].name}</td>
+            //                     <td>${data[i].strength}</td>
+            //                     <td>${data[i].generic}</td>
+            //                     <td>${data[i].category.name}</td>
+            //
+            //
+            //                     </tr>`
+            //                     table.innerHTML += row;
+            //     }
+            }
+                    
+        });
     
     </script>
 
