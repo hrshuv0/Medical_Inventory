@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Medical_Inventory.Data;
 using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Models;
+using Medical_Inventory.Models.ViewModel;
 
 namespace Medical_Inventory.Controllers
 {
@@ -20,14 +21,33 @@ namespace Medical_Inventory.Controllers
 
 
         // GET: Products
-        public async Task<IActionResult> Index(string? searchString=null)
+        public async Task<IActionResult> Index(ProductVm? product, string? searchString=null)
         {
+            var categoryList = _categoryRepository.GetAll().Result.Select(c => new SelectListItem()
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            });
+            // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+            
             var productList = await _productRepository.GetAll(includeProperties:"Category");
 
             if(searchString is not null)
                 productList = productList.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
 
-            return View(productList);
+            if (product!.SelectedCategory is not null && product.SelectedCategory.ToLower() != "all")
+                productList = productList.Where(p => p.Category.Id.ToString() == product.SelectedCategory);
+            
+
+            var productVm = new ProductVm()
+            {
+                CategoryList = categoryList,
+                Products = productList
+            };
+            
+            
+
+            return View(productVm);
         }
 
         // GET: Products/Details/5
