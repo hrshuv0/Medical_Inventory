@@ -21,6 +21,6 @@ public class ProductRepository : Repository<Product>, IProductRepository
         product.Strength = obj.Strength;
         product.Generic = obj.Generic;
         product.Details = obj.Details;
-        product.Category = obj.Category;
+        product.CategoryId = obj.CategoryId;
     }
 }
