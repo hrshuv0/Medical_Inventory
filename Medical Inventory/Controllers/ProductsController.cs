@@ -64,7 +64,7 @@ public class ProductsController : Controller
     // GET: Products/Create
     public IActionResult Create()
     {
-        var categoryList = _categoryRepository.GetAll().Result;
+        var categoryList = _categoryRepository.GetAll()!.Result;
         ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
             
         return View();
@@ -168,10 +168,10 @@ public class ProductsController : Controller
 
     public async Task<IActionResult> GetAll(string? id)
     {
-        var productList = await _productRepository.GetAll(includeProperties:"Category");
-        
-        if(id is not null && id.ToLower() != "all")
-            productList = productList.Where(p => p.CategoryId.ToString() == id);
+        var productList = await _productRepository.GetAll(includeProperties: "Category")!;
+
+        if (id is not null && id.ToLower() != "all")
+            productList = productList!.Where(p => p.CategoryId.ToString() == id);
 
         return Json(new { data = productList });
     }

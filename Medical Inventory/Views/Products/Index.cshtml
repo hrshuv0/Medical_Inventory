@@ -154,7 +154,7 @@
                   tr.appendChild(td);
                   
                   td = document.createElement("td");
-                  td.textContent = row.category.name;
+                  td.textContent = row.category == null? "":row.category.name.toString();
                   tr.appendChild(td);
                   
                   let action = `<div class="w-75 btn-group" role="group">
