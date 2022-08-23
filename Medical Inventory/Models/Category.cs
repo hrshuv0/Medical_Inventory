@@ -8,4 +8,6 @@ public class Category
     
     [Required]
     public string Name { get; set; }
+
+    public IEnumerable<Product>? Products { get; set; }
 }

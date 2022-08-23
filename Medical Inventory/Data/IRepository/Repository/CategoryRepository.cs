@@ -1,4 +1,5 @@
 ﻿using Medical_Inventory.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
 
@@ -18,5 +19,38 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
         if (category is null) return;
 
         category.Name = obj.Name;
+    }
+
+
+    
+    public void Remove(int id)
+    {
+        var category = _dbContext.Categories!.FirstOrDefault(c => c.Id == id)!;
+
+        if (category is null) return;
+
+        var products = from p in _dbContext.Products!
+                       .Include(p => p.Category)
+                       .DefaultIfEmpty()
+                       .Where(p => p.Category!.Id == id)
+                       select p;
+        
+        
+        if (products is not null)
+        {
+            foreach (var product in products)
+            {
+                if(product.CategoryId == id)
+                {
+                    product.Category = null;
+                    product.CategoryId = null;
+                }
+                
+            }
+            _dbContext.SaveChanges();
+        }
+        
+        
+        Remove(category);
     }
 }

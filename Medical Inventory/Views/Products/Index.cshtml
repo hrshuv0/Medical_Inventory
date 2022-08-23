@@ -13,19 +13,19 @@
         <a asp-action="Create" class="btn btn-primary">Create New</a>
     </div>
     <div class="col-4">
-        @* <form asp-action="Index"> *@
-        @*     <div class="row"> *@
-        @*         <div class="col"> *@
-        @*             <select asp-for="SelectedCategory" class="form-control text-center" asp-items="Model.CategoryList" id="filterId"> *@
-        @*                 <option selected>All</option> *@
-        @*             </select> *@
-        @*         </div> *@
-        @*         <div class="col"> *@
-        @*             <input type="submit" value="filter"/> *@
-        @*         </div> *@
-        @*     </div> *@
-        @* *@
-        @* </form> *@
+        @*<form asp-action="Index">
+            <div class="row">
+                <div class="col">
+                    <select asp-for="SelectedCategory" class="form-control text-center" asp-items="Model.CategoryList" id="filterId">
+                        <option selected>All</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <input type="submit" value="filter"/>
+                </div>
+            </div>
+        
+        </form>*@
 
         <div>
             <select asp-for="SelectedCategory" class="form-control text-center" asp-items="Model.CategoryList" id="filterId" name="filterId">
@@ -64,28 +64,31 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model.Products!)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Strength)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Generic)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary" style="width: 100px">Edit</a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info" style="width: 100px">Details</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-warning" style="width: 100px">Delete</a>
-            </td>
-        </tr>
-    }
+       
+          @foreach (var item in Model.Products!)
+            {
+                <tr class="text-center">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Strength)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Generic)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category!.Name)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary" style="width: 100px">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info" style="width: 100px">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-warning" style="width: 100px">Delete</a>
+                    </td>
+                </tr>
+            
+        }
+    
     </tbody>
 </table>
 
@@ -183,7 +186,7 @@
                   
               });
               
-             console.log("done");
+             console.log("\n\ndone");
               
             }
             catch(e){

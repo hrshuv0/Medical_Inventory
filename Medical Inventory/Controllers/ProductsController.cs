@@ -23,29 +23,28 @@ public class ProductsController : Controller
     // GET: Products
     public async Task<IActionResult> Index(ProductVm? product, string? searchString=null)
     {
-        var categoryList = _categoryRepository.GetAll().Result.Select(c => new SelectListItem()
+        var categoryList = _categoryRepository.GetAll()!.Result!.Select(c => new SelectListItem()
         {
             Text = c.Name,
             Value = c.Id.ToString()
         });
         // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
             
-        var productList = await _productRepository.GetAll(includeProperties:"Category");
+        var productList = await _productRepository.GetAll(includeProperties:"Category")!;
 
         if(searchString is not null)
-            productList = productList.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
+            productList = productList!.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
 
         if (product!.SelectedCategory is not null && product.SelectedCategory.ToLower() != "all")
-            productList = productList.Where(p => p.Category.Id.ToString() == product.SelectedCategory);
-            
-        ViewData["filterValue"] = "all";
+            productList = productList!.Where(p => p.Category!.Id.ToString() == product.SelectedCategory);
+
+
 
         var productVm = new ProductVm()
         {
             CategoryList = categoryList,
-            Products = productList
-        };
-            
+            Products = productList!.ToList()
+        };           
             
 
         return View(productVm);
@@ -54,7 +53,7 @@ public class ProductsController : Controller
     // GET: Products/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        var product = await _productRepository.GetFirstOrDefault(c => c.Id == id);
+        var product = await _productRepository.GetFirstOrDefault(c => c.Id == id)!;
 
         if (product == null || id == null)
             return NotFound();
@@ -76,27 +75,37 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Name,Strength,Generic,Details,CategoryId")] Product product)
     {
-        if (ModelState.IsValid)
+        var categoryList = _categoryRepository.GetAll()!.Result;
+        ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+
+        var existsProduct = await _productRepository.GetByName(product.Name)!;
+        
+        if (existsProduct is not null)
         {
-            await _productRepository.Add(product);
-            await _productRepository.Save();
-                
-            return RedirectToAction(nameof(Index));
+            ModelState.AddModelError(string.Empty, product.Name + " already exists");
         }
             
-        return View(product);
+        
+        if (!ModelState.IsValid) return View(product);
+        
+        await _productRepository.Add(product);
+        await _productRepository.Save();
+                
+        return RedirectToAction(nameof(Index));
+
     }
 
     // GET: Products/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        var product = await _productRepository.GetFirstOrDefault(p => p.Id == id);
+        var product = await _productRepository.GetFirstOrDefault(p => p.Id == id, includeProperties:"Category")!;
+
         if (product == null || id == null)
         {
             return NotFound();
         }
             
-        var categoryList = _categoryRepository.GetAll().Result;
+        var categoryList = await _categoryRepository.GetAll()!;
         ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
             
         return View(product);
@@ -107,6 +116,9 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Strength,Generic,Details,CategoryId")] Product product)
     {
+        var categoryList = _categoryRepository.GetAll()!.Result;
+        ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+        
         if (id != product.Id)
         {
             return NotFound();
@@ -123,7 +135,7 @@ public class ProductsController : Controller
     // GET: Products/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        var product = await _productRepository.GetFirstOrDefault(c => c.Id == id);
+        var product = await _productRepository.GetFirstOrDefault(c => c.Id == id, includeProperties: "Category")!;
 
         if (product == null || id == null)
         {
@@ -138,7 +150,7 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var product = await _productRepository.GetFirstOrDefault(c => c.Id == id);
+        var product = await _productRepository.GetFirstOrDefault(c => c.Id == id, includeProperties: "Category")!;
 
         if (product != null)
         {

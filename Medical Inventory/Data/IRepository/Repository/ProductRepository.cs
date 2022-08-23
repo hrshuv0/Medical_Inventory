@@ -1,4 +1,6 @@
 ﻿using Medical_Inventory.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
 
@@ -13,7 +15,11 @@ public class ProductRepository : Repository<Product>, IProductRepository
     
     public void Update(Product obj)
     {
-        var product = _dbContext.Products!.FirstOrDefault(c => c.Id == obj.Id);
+        var productlist = _dbContext.Products!.DefaultIfEmpty().ToList();
+
+
+        var product = _dbContext.Products!.DefaultIfEmpty().FirstOrDefault(c => c.Id == obj.Id)!;
+        //var product = _dbContext.Products!.Where(p => p.Id == obj.Id).FirstOrDefault();
 
         if (product is null) return;
 

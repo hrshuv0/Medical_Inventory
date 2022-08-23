@@ -21,8 +21,8 @@ public class Product
 
     [Required(ErrorMessage = "Please select Category")]
     [Display(Name = "Category")]
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
     [ForeignKey("CategoryId")]
     [ValidateNever]
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
 }

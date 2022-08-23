@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
@@ -16,33 +17,51 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet = _dbContext.Set<T>();
     }
 
-    public async Task<T?> GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties=null)
+    public async Task<T?>? GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties=null)
     {
-        var result = _dbSet.Where(filter);
-        
+        IQueryable<T> result = _dbSet.Where(filter);
+
         if (includeProperties is not null)
         {
             foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                result = result.Include(property);
+                result = result.Include(property).DefaultIfEmpty();
         }
 
-        return await result.FirstOrDefaultAsync();
+        var data = result.FirstOrDefaultAsync();
+
+        if(data is not null)
+            return await data;
+
+        return null;
     }
 
-    public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties=null)
+    public async Task<IEnumerable<T>?>? GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties=null)
     {
         IQueryable<T> result = _dbSet;
         
         if(filter is not null)
             result = result.Where(filter);
 
+
         if (includeProperties is not null)
         {
             foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                result = result.Include(property);
+                result = result.Include(property).DefaultIfEmpty();
         }
 
-        return await result.ToListAsync();
+        var data = await result!.ToListAsync();
+
+        return data;
+    }
+
+    public async Task<Product?> GetByName(string? name)
+    {
+        if (name is null)
+            return null;
+        
+        var result = await _dbContext.Products!.FirstOrDefaultAsync(p => p.Name == name);
+
+        return result;
     }
 
     public async Task Add(T entity)

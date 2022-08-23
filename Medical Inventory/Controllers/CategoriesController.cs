@@ -7,16 +7,18 @@ namespace Medical_Inventory.Controllers
     public class CategoriesController : Controller
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductRepository _productRepository;
 
-        public CategoriesController(ICategoryRepository categoryRepository)
+        public CategoriesController(ICategoryRepository categoryRepository, IProductRepository productRepository)
         {
             _categoryRepository = categoryRepository;
+            _productRepository = productRepository;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            var categories = await _categoryRepository.GetAll();
+            var categories = await _categoryRepository.GetAll()!;
 
             return View(categories);
         }
@@ -24,7 +26,7 @@ namespace Medical_Inventory.Controllers
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id);
+            var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id)!;
 
             if (category == null || id == null)
                 return NotFound();
@@ -54,7 +56,7 @@ namespace Medical_Inventory.Controllers
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id);
+            var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id)!;
 
             if (category == null || id == null)
             {
@@ -85,7 +87,7 @@ namespace Medical_Inventory.Controllers
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id);
+            var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id)!;
 
             if (category == null || id == null)
             {
@@ -100,13 +102,8 @@ namespace Medical_Inventory.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id);
-
-            if (category != null)
-            {
-                _categoryRepository.Remove(category);
-                await _categoryRepository.Save();
-            }
+             _categoryRepository.Remove(id);
+            await _categoryRepository.Save();
 
             return RedirectToAction(nameof(Index));
         }
