@@ -45,6 +45,12 @@ namespace Medical_Inventory.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
         {
+            var existsCategory = await _categoryRepository.GetByName(category.Name)!;
+        
+            if (existsCategory is not null)
+            {
+                ModelState.AddModelError(string.Empty, category.Name + " already exists");
+            }
             if (!ModelState.IsValid) return View(category);
 
             await _categoryRepository.Add(category);

@@ -53,4 +53,14 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
         
         Remove(category);
     }
+
+    public async Task<Category?> GetByName(string? name)
+    {
+        if (name is null)
+            return null;
+
+        var result = await _dbContext.Categories!.FirstOrDefaultAsync(p => p.Name == name);
+
+        return result;
+    }
 }

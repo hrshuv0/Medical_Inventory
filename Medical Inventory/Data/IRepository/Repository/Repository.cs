@@ -54,15 +54,7 @@ public class Repository<T> : IRepository<T> where T : class
         return data;
     }
 
-    public async Task<Product?> GetByName(string? name)
-    {
-        if (name is null)
-            return null;
-        
-        var result = await _dbContext.Products!.FirstOrDefaultAsync(p => p.Name == name);
-
-        return result;
-    }
+    
 
     public async Task Add(T entity)
     {

@@ -29,4 +29,14 @@ public class ProductRepository : Repository<Product>, IProductRepository
         product.Details = obj.Details;
         product.CategoryId = obj.CategoryId;
     }
+
+    public async Task<Product?> GetByName(string? name)
+    {
+        if (name is null)
+            return null;
+
+        var result = await _dbContext.Products!.FirstOrDefaultAsync(p => p.Name == name);
+
+        return result;
+    }
 }

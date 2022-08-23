@@ -7,7 +7,6 @@ public interface IRepository<T> where T: class
 {
     Task<T?>? GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties=null);
     Task<IEnumerable<T>?>? GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties=null);
-    Task<Product?> GetByName(string name);
     Task Add(T entity);
     void Remove(T entity);
     Task Save();
