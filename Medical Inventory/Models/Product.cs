@@ -9,14 +9,17 @@ public class Product
     public int Id { get; set; }
     
     [Required]
+    [MaxLength(25), MinLength(1)]
     public string Name { get; set; }
     
     [Required]
+    [StringLength(10, ErrorMessage ="max length must be 10")]
     public string Strength { get; set; }
     
     [Required]
     public string Generic { get; set; }
-    
+
+    [Column(TypeName ="ntext")]
     public string? Details { get; set; }
 
  
