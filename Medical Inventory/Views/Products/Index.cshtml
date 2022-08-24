@@ -75,7 +75,7 @@
                         @Html.DisplayFor(modelItem => item.Strength)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Generic)
+                        @Html.DisplayFor(modelItem => item.Generic!.Name)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Category!.Name)

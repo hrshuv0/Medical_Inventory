@@ -12,11 +12,13 @@ public class ProductsController : Controller
 {
     private readonly IProductRepository _productRepository;
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IGenericRepository _genericRepository;
 
-    public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository)
+    public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IGenericRepository genericRepository)
     {
         _productRepository = productRepository;
         _categoryRepository = categoryRepository;
+        _genericRepository = genericRepository;
     }
 
 
@@ -40,7 +42,7 @@ public class ProductsController : Controller
         
         // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
             
-        var productList = await _productRepository.GetAll(includeProperties:"Category")!;
+        var productList = await _productRepository.GetAll(includeProperties:"Category,Generic")!;
 
         if(productList is null)
         {
@@ -81,6 +83,11 @@ public class ProductsController : Controller
     {
         var categoryList = _categoryRepository.GetAll()!.Result;
         ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+        
+        // ViewBag["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+        
+        var genericList = _genericRepository.GetAll()!.Result;
+        ViewData["GenericId"] = new SelectList(genericList, "Id", "Name");
             
         return View();
     }
@@ -88,10 +95,13 @@ public class ProductsController : Controller
     // POST: Products/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Strength,Generic,Details,CategoryId")] Product product)
+    public async Task<IActionResult> Create([Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId")] Product product)
     {
         var categoryList = _categoryRepository.GetAll()!.Result;
         ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+
+        var genericList = _genericRepository.GetAll()!.Result;
+        ViewData["GenericId"] = new SelectList(genericList, "Id", "Name");
 
         var existsProduct = await _productRepository.GetByName(product.Name)!;
         
@@ -113,7 +123,7 @@ public class ProductsController : Controller
     // GET: Products/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        var product = await _productRepository.GetFirstOrDefault(p => p.Id == id, includeProperties:"Category")!;
+        var product = await _productRepository.GetFirstOrDefault(p => p.Id == id, includeProperties:"Category,Generic")!;
 
         if (product == null || id == null)
         {
@@ -122,14 +132,17 @@ public class ProductsController : Controller
             
         var categoryList = await _categoryRepository.GetAll()!;
         ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
-            
+        
+        var genericList = _genericRepository.GetAll()!.Result;
+        ViewData["GenericId"] = new SelectList(genericList, "Id", "Name");
+
         return View(product);
     }
 
     // POST: Products/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Strength,Generic,Details,CategoryId")] Product product)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId")] Product product)
     {
         var categoryList = _categoryRepository.GetAll()!.Result;
         ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");

@@ -23,9 +23,11 @@ public class GenericRepository : IGenericRepository
 
     public async Task<IEnumerable<Generic>?> GetAll()
     {
-        var result = await _dbContext.Generic!.ToListAsync();
+        var result = _dbContext.Generic!;
 
-        return result;
+        var data = await result.ToListAsync();
+
+        return data;
     }
 
     public async Task Add(Generic entity)
