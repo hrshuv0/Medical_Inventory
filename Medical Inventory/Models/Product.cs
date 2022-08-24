@@ -19,7 +19,7 @@ public class Product
     
     public string? Details { get; set; }
 
-    [Required(ErrorMessage = "Please select Category")]
+ 
     [Display(Name = "Category")]
     public int? CategoryId { get; set; }
     [ForeignKey("CategoryId")]

@@ -23,14 +23,29 @@ public class ProductsController : Controller
     // GET: Products
     public async Task<IActionResult> Index(ProductVm? product, string? searchString=null)
     {
-        var categoryList = _categoryRepository.GetAll()!.Result!.Select(c => new SelectListItem()
+        var categories = await _categoryRepository.GetAll()!;
+
+        if(categories is null)
+        {
+            categories = new List<Category>();
+
+        }
+
+        var categoryList = categories!.Select(c => new SelectListItem()
         {
             Text = c.Name,
             Value = c.Id.ToString()
-        });
+        }).ToList();
+
+        
         // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
             
         var productList = await _productRepository.GetAll(includeProperties:"Category")!;
+
+        if(productList is null)
+        {
+            productList = new List<Product>();
+        }
 
         if(searchString is not null)
             productList = productList!.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));

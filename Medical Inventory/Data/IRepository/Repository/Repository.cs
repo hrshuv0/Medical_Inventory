@@ -42,8 +42,9 @@ public class Repository<T> : IRepository<T> where T : class
         if(filter is not null)
             result = result.Where(filter);
 
+        var d = result.ToList();
 
-        if (includeProperties is not null)
+        if (includeProperties is not null && d is not null && d.Any())
         {
             foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 result = result.Include(property).DefaultIfEmpty();

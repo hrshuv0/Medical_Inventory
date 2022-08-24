@@ -1,10 +1,11 @@
 ﻿using Medical_Inventory.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
 
 namespace Medical_Inventory.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext
 {
         public ApplicationDbContext(DbContextOptions options) : base(options)
     {
@@ -18,6 +19,9 @@ public class ApplicationDbContext : DbContext
             .HasMany(c => c.Products)
             .WithOne(e => e.Category)
             .OnDelete(DeleteBehavior.NoAction);
+
+
+        base.OnModelCreating(modelBuilder);
     }
 
 
