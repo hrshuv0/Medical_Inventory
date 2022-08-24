@@ -87,7 +87,11 @@ namespace Medical_Inventory.Controllers;
         return View(model);
     }
 
-
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction(nameof(Index), "Home");
+    }
 
 
 }
