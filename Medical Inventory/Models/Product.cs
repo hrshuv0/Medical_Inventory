@@ -15,9 +15,13 @@ public class Product
     [Required]
     [StringLength(10, ErrorMessage ="max length must be 10")]
     public string Strength { get; set; }
-    
-    [Required]
-    public string Generic { get; set; }
+
+    [Display(Name = "Generic")]
+    public int? GenericId { get; set; }
+    [ForeignKey("GenericId")]
+    [ValidateNever]
+    public Generic? Generic { get; set; }
+
 
     [Column(TypeName ="ntext")]
     public string? Details { get; set; }
