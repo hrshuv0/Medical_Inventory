@@ -52,6 +52,26 @@ public class GenericRepository : IGenericRepository
 
     public async Task Remove(Generic entity)
     {
+        var products = from p in _dbContext.Products!
+                .Include(p => p.Generic)
+                .DefaultIfEmpty()
+                .Where(p => p.Generic!.Id == entity.Id)
+            select p;
+
+        if (products is not null)
+        {
+            foreach (var product in products)
+            {
+                if (product.GenericId == entity.Id)
+                {
+                    product.Generic = null;
+                    product.GenericId = null;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
+        
         _dbContext.Generic!.Remove(entity);
         await _dbContext.SaveChangesAsync();
     }

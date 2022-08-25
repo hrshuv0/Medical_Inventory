@@ -15,9 +15,6 @@ public class ProductRepository : Repository<Product>, IProductRepository
     
     public void Update(Product obj)
     {
-        var productlist = _dbContext.Products!.DefaultIfEmpty().ToList();
-
-
         var product = _dbContext.Products!.DefaultIfEmpty().FirstOrDefault(c => c.Id == obj.Id)!;
         //var product = _dbContext.Products!.Where(p => p.Id == obj.Id).FirstOrDefault();
 

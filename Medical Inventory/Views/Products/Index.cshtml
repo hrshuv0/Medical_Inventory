@@ -102,7 +102,7 @@
         console.log(categoryId);
         
         $.ajax({
-            url:"Products/GetAll?id="+categoryId,
+            url:"api/Products?id="+categoryId,
             method:"GET",
             success:function (data){
                 updateTable(data.data);
@@ -150,7 +150,7 @@
                   tr.appendChild(td);
                   
                   td = document.createElement("td");
-                  td.textContent = row.generic;
+                  td.textContent = row.generic == null? "":row.generic.name.toString();
                   tr.appendChild(td);
                   
                   td = document.createElement("td");

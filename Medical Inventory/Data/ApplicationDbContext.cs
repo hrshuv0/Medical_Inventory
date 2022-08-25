@@ -20,6 +20,12 @@ public class ApplicationDbContext : IdentityDbContext
             .WithOne(e => e.Category)
             .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder
+            .Entity<Generic>()
+            .HasMany(c => c.Products)
+            .WithOne(e => e.Generic)
+            .OnDelete(DeleteBehavior.NoAction);
+
 
         base.OnModelCreating(modelBuilder);
     }
@@ -27,5 +33,5 @@ public class ApplicationDbContext : IdentityDbContext
 
     public DbSet<Category>? Categories { get; set; }
     public DbSet<Product>? Products { get; set; }
-    public DbSet<Medical_Inventory.Models.Generic>? Generic { get; set; }
+    public DbSet<Generic>? Generic { get; set; }
 }

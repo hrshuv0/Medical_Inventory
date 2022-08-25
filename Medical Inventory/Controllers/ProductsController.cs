@@ -194,9 +194,10 @@ public class ProductsController : Controller
 
     #region API CALLS
 
+    [Route("api/[controller]")]
     public async Task<IActionResult> GetAll(string? id)
     {
-        var productList = await _productRepository.GetAll(includeProperties: "Category")!;
+        var productList = await _productRepository.GetAll(includeProperties: "Category,Generic")!;
 
         if (id is not null && id.ToLower() != "all")
             productList = productList!.Where(p => p.CategoryId.ToString() == id);
