@@ -13,12 +13,14 @@ public class ProductsController : Controller
     private readonly IProductRepository _productRepository;
     private readonly ICategoryRepository _categoryRepository;
     private readonly IGenericRepository _genericRepository;
+    private readonly ICompanyRepository _companyRepository;
 
-    public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IGenericRepository genericRepository)
+    public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IGenericRepository genericRepository, ICompanyRepository companyRepository)
     {
         _productRepository = productRepository;
         _categoryRepository = categoryRepository;
         _genericRepository = genericRepository;
+        _companyRepository = companyRepository;
     }
 
 
@@ -42,7 +44,7 @@ public class ProductsController : Controller
         
         // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
             
-        var productList = await _productRepository.GetAll(includeProperties:"Category,Generic")!;
+        var productList = await _productRepository.GetAll(includeProperties:"Category,Generic,Company")!;
 
         if(productList is null)
         {
@@ -88,6 +90,9 @@ public class ProductsController : Controller
         
         var genericList = _genericRepository.GetAll()!.Result;
         ViewData["GenericId"] = new SelectList(genericList, "Id", "Name");
+        
+        var companyList = _companyRepository.GetAll()!.Result;
+        ViewData["CompanyId"] = new SelectList(companyList, "Id", "Name");
             
         return View();
     }
@@ -95,7 +100,7 @@ public class ProductsController : Controller
     // POST: Products/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId")] Product product)
+    public async Task<IActionResult> Create([Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId")] Product product)
     {
         var categoryList = _categoryRepository.GetAll()!.Result;
         ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
@@ -123,7 +128,7 @@ public class ProductsController : Controller
     // GET: Products/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        var product = await _productRepository.GetFirstOrDefault(p => p.Id == id, includeProperties:"Category,Generic")!;
+        var product = await _productRepository.GetFirstOrDefault(p => p.Id == id, includeProperties:"Category,Generic,Company")!;
 
         if (product == null || id == null)
         {
@@ -135,6 +140,9 @@ public class ProductsController : Controller
         
         var genericList = _genericRepository.GetAll()!.Result;
         ViewData["GenericId"] = new SelectList(genericList, "Id", "Name");
+        
+        var companyList = _companyRepository.GetAll()!.Result;
+        ViewData["CompanyId"] = new SelectList(companyList, "Id", "Name");
 
         return View(product);
     }
@@ -142,10 +150,10 @@ public class ProductsController : Controller
     // POST: Products/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId")] Product product)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId")] Product product)
     {
-        var categoryList = _categoryRepository.GetAll()!.Result;
-        ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+        // var categoryList = _categoryRepository.GetAll()!.Result;
+        // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
         
         if (id != product.Id)
         {
@@ -197,7 +205,7 @@ public class ProductsController : Controller
     [Route("api/[controller]")]
     public async Task<IActionResult> GetAll(string? id)
     {
-        var productList = await _productRepository.GetAll(includeProperties: "Category,Generic")!;
+        var productList = await _productRepository.GetAll(includeProperties: "Category,Generic,Company")!;
 
         if (id is not null && id.ToLower() != "all")
             productList = productList!.Where(p => p.CategoryId.ToString() == id);

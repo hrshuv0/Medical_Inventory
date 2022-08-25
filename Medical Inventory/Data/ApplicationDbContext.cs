@@ -25,6 +25,12 @@ public class ApplicationDbContext : IdentityDbContext
             .HasMany(c => c.Products)
             .WithOne(e => e.Generic)
             .OnDelete(DeleteBehavior.NoAction);
+        
+        modelBuilder
+            .Entity<Company>()
+            .HasMany(c => c.Products)
+            .WithOne(e => e.Company)
+            .OnDelete(DeleteBehavior.NoAction);
 
 
         base.OnModelCreating(modelBuilder);

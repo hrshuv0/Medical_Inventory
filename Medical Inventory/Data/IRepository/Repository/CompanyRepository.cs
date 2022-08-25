@@ -53,23 +53,22 @@ public class CompanyRepository : ICompanyRepository
     public async Task Remove(Company entity)
     {
         var products = from p in _dbContext.Products!
-                .Include(p => p.Generic)
+                .Include(p => p.Company)
                 .DefaultIfEmpty()
-                .Where(p => p.Generic!.Id == entity.Id)
+                .Where(p => p.Company!.Id == entity.Id)
             select p;
 
         if (products is not null)
         {
             foreach (var product in products)
             {
-                if (product.GenericId == entity.Id)
-                {
-                    product.Generic = null;
-                    product.GenericId = null;
-                }
+                if (product.CompanyId != entity.Id) continue;
+                
+                product.Company = null;
+                product.CompanyId = null;
             }
 
-            // await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
         
         _dbContext.Company!.Remove(entity);

@@ -34,6 +34,7 @@ function updateDataTable(data) {
             {"data":"strength"},
             {"data":"generic.name", "sDefaultContent":"" },
             {"data":"category.name", "sDefaultContent":"" },
+            {"data":"company.name", "sDefaultContent":"" },
             {"data":"id",
                 "render":function (data)
                 {
@@ -70,11 +71,15 @@ function updateDataTable(data) {
                 className: 'dt-head-center',
             },
             {
+                targets: 4,
+                className: 'dt-head-center',
+            },
+            {
                 targets: 1,
                 className: 'dt-center',
             },
             {
-                targets: 4,
+                targets: 5,
                 className: 'dt-center',
             },
             

@@ -32,4 +32,10 @@ public class Product
     [ForeignKey("CategoryId")]
     [ValidateNever]
     public Category? Category { get; set; }
+    
+    [Display(Name = "Company")]
+    public int? CompanyId { get; set; }
+    [ForeignKey("CompanyId")]
+    [ValidateNever]
+    public Company? Company { get; set; }
 }

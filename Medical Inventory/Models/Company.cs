@@ -17,4 +17,6 @@ public class Company
     [StringLength(50)]
     public string? Address { get; set; }
     
+    public IEnumerable<Product>? Products { get; set; }
+    
 }
