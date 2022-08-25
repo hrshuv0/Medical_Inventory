@@ -13,12 +13,10 @@ namespace Medical_Inventory.Controllers
 {
     public class GenericsController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly IGenericRepository _genericRepository;
 
-        public GenericsController(ApplicationDbContext context, IGenericRepository genericRepository)
+        public GenericsController(IGenericRepository genericRepository)
         {
-            _context = context;
             _genericRepository = genericRepository;
         }
 
@@ -61,12 +59,7 @@ namespace Medical_Inventory.Controllers
         // GET: Generics/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Generic == null)
-            {
-                return NotFound();
-            }
-
-            var generic = await _context.Generic.FindAsync(id);
+            var generic = await _genericRepository.GetFirstOrDefault(id)!;
             if (generic == null)
             {
                 return NotFound();
@@ -75,8 +68,6 @@ namespace Medical_Inventory.Controllers
         }
 
         // POST: Generics/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Generic generic)
@@ -106,13 +97,7 @@ namespace Medical_Inventory.Controllers
         // GET: Generics/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Generic == null)
-            {
-                return NotFound();
-            }
-
-            var generic = await _context.Generic
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var generic = await _genericRepository.GetFirstOrDefault(id)!;
             if (generic == null)
             {
                 return NotFound();

@@ -1,4 +1,4 @@
-﻿using Medical_Inventory.Models;
+using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
@@ -34,4 +34,5 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Category>? Categories { get; set; }
     public DbSet<Product>? Products { get; set; }
     public DbSet<Generic>? Generic { get; set; }
+    public DbSet<Medical_Inventory.Models.Company>? Company { get; set; }
 }

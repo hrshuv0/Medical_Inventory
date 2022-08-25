@@ -23,6 +23,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IGenericRepository, GenericRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+
 
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
