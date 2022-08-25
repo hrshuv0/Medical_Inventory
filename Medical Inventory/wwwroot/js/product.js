@@ -32,8 +32,8 @@ function updateDataTable(data) {
         "columns":[
             {"data":"name", "width":"20%"},
             {"data":"strength"},
-            {"data":"generic.name"},
-            {"data":"category.name"},
+            {"data":"generic.name", "sDefaultContent":"" },
+            {"data":"category.name", "sDefaultContent":"" },
             {"data":"id",
                 "render":function (data)
                 {
@@ -57,7 +57,6 @@ function updateDataTable(data) {
             }            
         ],
         columnDefs: [
-            
             {
                 targets: 0,
                 className: 'dt-head-center',
