@@ -72,7 +72,7 @@ public class ProductsController : Controller
     // GET: Products/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        var product = await _productRepository.GetFirstOrDefault(c => c.Id == id)!;
+        var product = await _productRepository.GetFirstOrDefault(c => c.Id == id, includeProperties:"Category,Generic,Company")!;
 
         if (product == null || id == null)
             return NotFound();
