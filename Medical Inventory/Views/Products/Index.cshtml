@@ -45,25 +45,17 @@
 
     </div>
 </div>
-<table class="table table-bordered" id="tableId">
+<table class="table table-bordered table-striped table-light" id="tableId" style="width: 100%">
     <thead>
     <tr>
-        <th>
-            Name
-        </th>
-        <th>
-            Strength
-        </th>
-        <th>
-            Generic
-        </th>
-        <th>
-            Category
-        </th>
+        <th>Name</th>
+        <th>Strength</th>
+        <th>Generic</th>
+        <th>Category</th>
         <th></th>
     </tr>
     </thead>
-    <tbody>
+    @*<tbody>
        
           @foreach (var item in Model.Products!)
             {
@@ -89,12 +81,13 @@
             
         }
     
-    </tbody>
+    </tbody>*@
 </table>
 
 @section Scripts
 {
-    <script>
+    
+    @*<script>
     
     $("#filterId").change(function (){
         
@@ -198,6 +191,9 @@
                     
         });
     
-    </script>
+    </script>*@
+    
+    <script src="js/product.js"></script>
+    
 
 }
