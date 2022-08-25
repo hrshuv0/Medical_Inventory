@@ -1,16 +1,34 @@
 ﻿let dataTable;
 
 $(document).ready(function (){
-    loadDataTable();
+    $.ajax({
+        url:"api/Products",
+        method:"GET",
+        success:function (data){
+            updateDataTable(data.data);
+        }
+    });
 });
 
-function loadDataTable() {
-    console.log("load data table working!")
+$("#filterId").change(function (){
+    let categoryId = document.getElementById('filterId').value;
+
+    $.ajax({
+        url:"api/Products?id="+categoryId,
+        method:"GET",
+        success:function (data){
+            updateDataTable(data.data);
+        }
+    });
+});
+
+function updateDataTable(data) {
+    // console.log("load data table working!")
+    // console.log(data);
     
     dataTable = $('#tableId').DataTable({
-        "ajax":{
-            "url":"/api/Products"
-        },
+        "bDestroy":true,
+        data:data,
         "columns":[
             {"data":"name", "width":"20%"},
             {"data":"strength"},
@@ -36,10 +54,36 @@ function loadDataTable() {
                     
                     `
                 }
-            }
+            }            
+        ],
+        columnDefs: [
             
-        ]
+            {
+                targets: 0,
+                className: 'dt-head-center',
+            },
+            {
+                targets: 2,
+                className: 'dt-head-center',
+            },
+            {
+                targets: 3,
+                className: 'dt-head-center',
+            },
+            {
+                targets: 1,
+                className: 'dt-center',
+            },
+            {
+                targets: 4,
+                className: 'dt-center',
+            },
+            
+        ],
+        language:{
+            processing:"loading.....",
+            search:"Search "
+        }
     });
-    console.log(dataTable);
 
 }
