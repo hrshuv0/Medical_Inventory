@@ -40,4 +40,11 @@ public class ProductRepository : Repository<Product>, IProductRepository
 
         return result;
     }
+
+    public async Task<Product?> GetProductByUserId(string id)
+    {
+        var result = await _dbContext.Products!.Include(u => u.CreatedBy).FirstOrDefaultAsync(u => u.CreatedBy!.Id == id);
+
+        return result;
+    }
 }

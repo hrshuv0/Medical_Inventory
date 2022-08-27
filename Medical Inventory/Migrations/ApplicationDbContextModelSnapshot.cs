@@ -36,7 +36,7 @@ namespace Medical_Inventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Medical_Inventory.Models.Company", b =>
@@ -63,7 +63,7 @@ namespace Medical_Inventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company");
+                    b.ToTable("Company", (string)null);
                 });
 
             modelBuilder.Entity("Medical_Inventory.Models.Generic", b =>
@@ -80,7 +80,7 @@ namespace Medical_Inventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Generic");
+                    b.ToTable("Generic", (string)null);
                 });
 
             modelBuilder.Entity("Medical_Inventory.Models.Product", b =>
@@ -137,7 +137,7 @@ namespace Medical_Inventory.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

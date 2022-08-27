@@ -80,7 +80,7 @@ public class ProductsController : Controller
 
         if (product == null || id == null)
             return NotFound();
-        
+
         var createdBy = _productRepository.GetFirstOrDefaultUser(product.CreatedById!);
         var updatedBy = _productRepository.GetFirstOrDefaultUser(product.UpdatedById!);
 
