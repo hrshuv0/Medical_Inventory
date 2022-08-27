@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Medical_Inventory.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
@@ -65,6 +66,13 @@ public class Repository<T> : IRepository<T> where T : class
     public void Remove(T entity)
     {
         _dbSet.Remove(entity);
+    }
+
+    public IdentityUser? GetFirstOrDefaultUser(string id)
+    {
+        var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
+
+        return user;
     }
 
     public async Task Save()
