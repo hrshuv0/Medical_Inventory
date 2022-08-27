@@ -38,4 +38,9 @@ public class Product
     [ForeignKey("CompanyId")]
     [ValidateNever]
     public Company? Company { get; set; }
+    
+    
+    
+    
+    
 }

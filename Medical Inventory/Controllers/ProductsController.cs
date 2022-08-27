@@ -5,9 +5,11 @@ using Medical_Inventory.Data;
 using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Models;
 using Medical_Inventory.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Medical_Inventory.Controllers;
 
+[Authorize]
 public class ProductsController : Controller
 {
     private readonly IProductRepository _productRepository;
@@ -25,6 +27,7 @@ public class ProductsController : Controller
 
 
     // GET: Products
+    [AllowAnonymous]
     public async Task<IActionResult> Index(ProductVm? product, string? searchString=null)
     {
         var categories = await _categoryRepository.GetAll()!;
