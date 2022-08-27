@@ -96,6 +96,11 @@ namespace Medical_Inventory.Controllers;
         return RedirectToAction(nameof(Index), "Home");
     }
 
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
+
 
 }
 

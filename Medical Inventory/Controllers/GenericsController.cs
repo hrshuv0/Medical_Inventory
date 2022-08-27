@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Medical_Inventory.Controllers;
 
-[Authorize]
+[Authorize(Roles = StaticData.RoleAdmin)]
 public class GenericsController : Controller
 {
     private readonly IGenericRepository _genericRepository;

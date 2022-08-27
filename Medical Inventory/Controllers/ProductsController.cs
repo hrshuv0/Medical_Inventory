@@ -28,7 +28,6 @@ public class ProductsController : Controller
 
 
     // GET: Products
-    [AllowAnonymous]
     public async Task<IActionResult> Index(ProductVm? product, string? searchString=null)
     {
         var categories = await _categoryRepository.GetAll()!;
@@ -91,6 +90,7 @@ public class ProductsController : Controller
     }
 
     // GET: Products/Create
+    [Authorize(Roles = StaticData.RoleAdmin)]
     public IActionResult Create()
     {
         var categoryList = _categoryRepository.GetAll()!.Result;
@@ -108,6 +108,7 @@ public class ProductsController : Controller
     }
 
     // POST: Products/Create
+    [Authorize(Roles = StaticData.RoleAdmin)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId")] Product product)
@@ -143,6 +144,7 @@ public class ProductsController : Controller
     }
 
     // GET: Products/Edit/5
+    [Authorize(Roles = StaticData.RoleAdmin)]
     public async Task<IActionResult> Edit(int? id)
     {
         var product = await _productRepository.GetFirstOrDefault(p => p.Id == id, includeProperties:"Category,Generic,Company")!;
@@ -165,6 +167,7 @@ public class ProductsController : Controller
     }
 
     // POST: Products/Edit/5
+    [Authorize(Roles = StaticData.RoleAdmin)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId")] Product product)
@@ -189,6 +192,7 @@ public class ProductsController : Controller
     }
 
     // GET: Products/Delete/5
+    [Authorize(Roles = StaticData.RoleAdmin)]
     public async Task<IActionResult> Delete(int? id)
     {
         var product = await _productRepository.GetFirstOrDefault(c => c.Id == id, includeProperties: "Category")!;
@@ -202,6 +206,7 @@ public class ProductsController : Controller
     }
 
     // POST: Products/Delete/5
+    [Authorize(Roles = StaticData.RoleAdmin)]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -222,6 +227,7 @@ public class ProductsController : Controller
 
     #region API CALLS
 
+    [Authorize]
     [Route("api/[controller]")]
     public async Task<IActionResult> GetAll(string? id)
     {

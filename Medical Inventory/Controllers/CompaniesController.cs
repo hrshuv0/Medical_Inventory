@@ -1,3 +1,4 @@
+using Medical_Inventory.Data;
 using Microsoft.AspNetCore.Mvc;
 using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Models;
@@ -5,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Medical_Inventory.Controllers;
 
-[Authorize]
+[Authorize(Roles = StaticData.RoleAdmin)]
 public class CompaniesController : Controller
 {
     private readonly ICompanyRepository _companyRepository;

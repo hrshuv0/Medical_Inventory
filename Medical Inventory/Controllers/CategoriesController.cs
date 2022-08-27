@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Medical_Inventory.Controllers;
 
-[Authorize]
+[Authorize(Roles = StaticData.RoleAdmin)]
 public class CategoriesController : Controller
 {
     private readonly ICategoryRepository _categoryRepository;
