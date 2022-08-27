@@ -27,6 +27,8 @@ public class ProductRepository : Repository<Product>, IProductRepository
         product.CategoryId = obj.CategoryId;
         product.GenericId = obj.GenericId;
         product.CompanyId = obj.CompanyId;
+        product.UpdatedTime= DateTime.Now;
+        product.UpdatedById = obj.UpdatedById;
     }
 
     public async Task<Product?> GetByName(string? name)

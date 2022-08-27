@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Medical_Inventory.Models;
@@ -39,6 +40,18 @@ public class Product
     [ValidateNever]
     public Company? Company { get; set; }
     
+    public DateTime CreatedTime { get; set; }
+    public DateTime UpdatedTime { get; set; }
+
+    public string? CreatedById { get; set; }
+    [ForeignKey("CreatedById")]
+    [ValidateNever]
+    public IdentityUser? CreatedBy { get; set; }
+
+    public string? UpdatedById { get; set; }
+    [ForeignKey("UpdatedById")]
+    [ValidateNever]
+    public IdentityUser? UpdatedBy { get; set; }
     
     
     

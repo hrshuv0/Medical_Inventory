@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -121,6 +122,13 @@ public class ProductsController : Controller
         
         if (!ModelState.IsValid) return View(product);
         
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        
+        product.CreatedTime = DateTime.Now;
+        product.UpdatedTime = DateTime.Now;
+        product.CreatedById = userId;
+        product.UpdatedById = userId;
+
         await _productRepository.Add(product);
         await _productRepository.Save();
                 
@@ -137,7 +145,7 @@ public class ProductsController : Controller
         {
             return NotFound();
         }
-            
+
         var categoryList = await _categoryRepository.GetAll()!;
         ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
         
@@ -164,6 +172,9 @@ public class ProductsController : Controller
         }
 
         if (!ModelState.IsValid) return View(product);
+        
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        product.UpdatedById = userId;
 
         _productRepository.Update(product);
         await _productRepository.Save();
