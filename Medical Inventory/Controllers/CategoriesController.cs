@@ -1,3 +1,4 @@
+using Medical_Inventory.Data;
 using Microsoft.AspNetCore.Mvc;
 using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Models;

@@ -1,4 +1,5 @@
-﻿using Medical_Inventory.Models.ViewModel.AuthViewModel;
+﻿using Medical_Inventory.Data;
+using Medical_Inventory.Models.ViewModel.AuthViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,12 +8,14 @@ namespace Medical_Inventory.Controllers;
     public class AuthController : Controller
     {
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly SignInManager<IdentityUser> _signInManager;
 
-    public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _roleManager = roleManager;
     }
 
     [HttpGet]
@@ -45,7 +48,7 @@ namespace Medical_Inventory.Controllers;
                 TempData["Error"] = "User registration failed";
                 return View(model);
             }
-            //await _userManager.AddToRoleAsync(newUser, UserRoles.User);
+            await _userManager.AddToRoleAsync(newUser, StaticData.RoleUser);
 
             var result = await _signInManager.PasswordSignInAsync(newUser, model.Password, false, false);
             if (result.Succeeded)

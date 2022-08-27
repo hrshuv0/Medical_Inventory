@@ -18,7 +18,7 @@ public class Product
     public string Strength { get; set; }
 
     [Display(Name = "Generic")]
-    public int? GenericId { get; set; }
+    public int? GenericId { get; set; }  
     [ForeignKey("GenericId")]
     [ValidateNever]
     public Generic? Generic { get; set; }
