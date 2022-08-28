@@ -3,6 +3,7 @@
 $(document).ready(function (){
     $.ajax({
         url:"api/Products",
+        cache:false,
         method:"GET",
         success:function (data){
             updateDataTable(data.data);
@@ -15,6 +16,7 @@ $("#filterId").change(function (){
 
     $.ajax({
         url:"api/Products?id="+categoryId,
+        cache:false,
         method:"GET",
         success:function (data){
             updateDataTable(data.data);
@@ -23,18 +25,20 @@ $("#filterId").change(function (){
 });
 
 function updateDataTable(data) {
-    // console.log("load data table working!")
-    // console.log(data);
+    console.log("load data table working!")
+    console.log(data);
     
     dataTable = $('#tableId').DataTable({
-        "bDestroy":true,
+        "bDestroy": true,
+        order: [[5, "ASC"]],
         data:data,
         "columns":[
             {"data":"name", "width":"20%"},
             {"data":"strength"},
             {"data":"generic.name", "sDefaultContent":"" },
             {"data":"category.name", "sDefaultContent":"" },
-            {"data":"company.name", "sDefaultContent":"" },
+            {"data": "company.name", "sDefaultContent": "" },
+            {"data": "updatedTime", "sDefaultContent": "" },
             {"data":"id",
                 "render":function (data)
                 {

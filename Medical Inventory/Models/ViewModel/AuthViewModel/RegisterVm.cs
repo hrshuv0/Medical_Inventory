@@ -11,7 +11,7 @@ namespace Medical_Inventory.Models.ViewModel.AuthViewModel
 
         [Required(ErrorMessage = "password is required")]
         [DataType(DataType.Password)]
-        [MinLength(4, ErrorMessage = "minimum length 4 required")]
+        [MinLength(6, ErrorMessage = "minimum length 6 required")]
         public string? Password { get; set; }
 
         [Display(Name = "Confirm Password")]
