@@ -9,4 +9,5 @@ public interface IGenericRepository
     Task Add(Generic entity);
     Task Update(Generic entity);
     Task Remove(Generic entity);
+    Task<Generic?> GetByName(string name);
 }

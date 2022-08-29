@@ -1,4 +1,5 @@
-﻿using Medical_Inventory.Models;
+﻿using Medical_Inventory.Exceptions;
+using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
@@ -74,6 +75,24 @@ public class GenericRepository : IGenericRepository
         
         _dbContext.Generic!.Remove(entity);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<Generic?> GetByName(string name)
+    {
+        try
+        {
+            var result = await _dbContext.Generic!.FirstOrDefaultAsync(p => p.Name == name);
+
+            if (result is not null)
+                throw new DuplicationException(name!);
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        return null;
     }
 }
 
