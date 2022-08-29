@@ -1,4 +1,5 @@
-﻿using Medical_Inventory.Models;
+﻿using Medical_Inventory.Exceptions;
+using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
@@ -12,13 +13,22 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
         _dbContext = dbContext;
     }
     
-    public void Update(Category obj)
+    public async void Update(Category obj)
     {
-        var category = _dbContext.Categories!.FirstOrDefault(c => c.Id == obj.Id);
+        try
+        {
+            var category = _dbContext.Categories!.FirstOrDefault(c => c.Id == obj.Id);
 
-        if (category is null) return;
+            if (category is null)
+                throw new NotFoundException("");
 
-        category.Name = obj.Name;
+            category.Name = obj.Name;
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
     }
 
 
@@ -56,11 +66,19 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
 
     public async Task<Category?> GetByName(string? name)
     {
-        if (name is null)
-            return null;
+        try
+        {
+            var result = await _dbContext.Categories!.FirstOrDefaultAsync(p => p.Name == name);
 
-        var result = await _dbContext.Categories!.FirstOrDefaultAsync(p => p.Name == name);
+            if(result is not null)
+                throw new DuplicationException(name);
 
-        return result;
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        return null;
     }
 }

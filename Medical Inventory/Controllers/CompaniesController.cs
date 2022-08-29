@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Authorization;
+using Medical_Inventory.Data.IRepository.Repository;
+using System.Data;
+using Medical_Inventory.Exceptions;
 
 namespace Medical_Inventory.Controllers;
 
@@ -46,14 +49,24 @@ public class CompaniesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Id,Name,Phone,Address")] Company company)
     {
-        if (ModelState.IsValid)
+        try
         {
-            if (!ModelState.IsValid) return View(company);
-
             await _companyRepository.Add(company);
-            
-            return RedirectToAction(nameof(Index));
         }
+        catch (DuplicationException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message.ToString());
+            //Console.WriteLine(ex.Message + " already exists");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("default");
+            Console.WriteLine(ex.Message);
+        }
+
+        if (!ModelState.IsValid) return View(company);
+
+       
         return View(company);
     }
 

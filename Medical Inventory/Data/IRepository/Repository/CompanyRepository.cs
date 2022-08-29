@@ -1,5 +1,7 @@
-﻿using Medical_Inventory.Models;
+﻿using Medical_Inventory.Exceptions;
+using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
 
@@ -32,8 +34,24 @@ public class CompanyRepository : ICompanyRepository
 
     public async Task Add(Company entity)
     {
-        await _dbContext.Company!.AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
+        try
+        {
+            var existsCompany = _dbContext.Company!.FirstOrDefaultAsync(c => c.Id == entity.Id);
+
+            if (existsCompany != null)
+            {
+                throw new DuplicationException(entity.Name);
+            }
+
+            await _dbContext.Company!.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+        
     }
 
     public async Task Update(Company entity)
