@@ -14,13 +14,23 @@ public class CompanyRepository : ICompanyRepository
         _dbContext = dbContext;
     }
 
-    public Task<Company?>? GetFirstOrDefault(int? id)
+    public async Task<Company?>? GetFirstOrDefault(int? id)
     {
-        if (id is null) return null;
+        try
+        {
+            var result = await _dbContext.Company!.FirstOrDefaultAsync(c => c.Id == id);
 
-        var result = _dbContext.Company!.FirstOrDefaultAsync(c => c.Id == id);
+            if (result is null)
+                throw new NotFoundException("");
 
-        return result;
+            return result;
+
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
     }
 
     public async Task<IEnumerable<Company>?> GetAll()
@@ -36,7 +46,7 @@ public class CompanyRepository : ICompanyRepository
     {
         try
         {
-            var existsCompany = _dbContext.Company!.FirstOrDefaultAsync(c => c.Id == entity.Id);
+            var existsCompany = await _dbContext.Company!.FirstOrDefaultAsync(c => c.Id == entity.Id);
 
             if (existsCompany != null)
             {
@@ -92,5 +102,25 @@ public class CompanyRepository : ICompanyRepository
         _dbContext.Company!.Remove(entity);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<Company?> GetByName(string? name)
+    {
+        try
+        {
+            var result = await _dbContext.Company!.FirstOrDefaultAsync(p => p.Name == name);
+
+            if (result is not null)
+                throw new DuplicationException(name!);
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        return null;
+    }
+
+    
 }
 

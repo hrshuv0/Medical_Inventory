@@ -12,10 +12,12 @@ namespace Medical_Inventory.Controllers;
 [Authorize(Roles = StaticData.RoleAdmin)]
 public class CompaniesController : Controller
 {
+    private readonly ILogger<CompaniesController> _logger;
     private readonly ICompanyRepository _companyRepository;
 
-    public CompaniesController(ICompanyRepository companyRepository)
+    public CompaniesController(ILogger<CompaniesController> logger, ICompanyRepository companyRepository)
     {
+        _logger = logger;
         _companyRepository = companyRepository;
     }
 
@@ -31,11 +33,21 @@ public class CompaniesController : Controller
     // GET: Companies/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        var result = await _companyRepository.GetFirstOrDefault(id)!;
-
-        if (result is null) return NotFound();
-
-        return View(result);
+        try
+        {
+            var result = await _companyRepository.GetFirstOrDefault(id)!;
+            return View(result);
+        }
+        catch (NotFoundException ex)
+        {
+            _logger.LogWarning(ex.Message);
+            return RedirectToAction("PageNotFound", "Home");
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        
     }
 
     // GET: Companies/Create
@@ -51,34 +63,48 @@ public class CompaniesController : Controller
     {
         try
         {
+            var existsCompany = await _companyRepository.GetByName(company.Name)!;
+
             await _companyRepository.Add(company);
+
+            _logger.LogInformation(message: $"new company added with name of {company.Name}");
         }
         catch (DuplicationException ex)
         {
-            ModelState.AddModelError(string.Empty, ex.Message.ToString());
-            //Console.WriteLine(ex.Message + " already exists");
+            ModelState.AddModelError(string.Empty, company.Name + " already exists");
+            _logger.LogWarning(ex.Message);
         }
         catch (Exception ex)
         {
-            Console.WriteLine("default");
-            Console.WriteLine(ex.Message);
+            _logger.LogWarning(ex.Message);
+            throw;
         }
 
         if (!ModelState.IsValid) return View(company);
 
-       
-        return View(company);
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Companies/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        var company = await _companyRepository.GetFirstOrDefault(id)!;
-        if (company == null)
+        try
         {
-            return NotFound();
+            var company = await _companyRepository.GetFirstOrDefault(id)!;
+
+            return View(company);
         }
-        return View(company);
+        catch (NotFoundException ex)
+        {
+            _logger.LogWarning($"category not found of id: {id}");
+            return RedirectToAction("PageNotFound", "Home");
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
     }
 
     // POST: Companies/Edit/5
@@ -86,25 +112,32 @@ public class CompaniesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Phone,Address")] Company company)
     {
-        if (id != company.Id)
+        try
         {
-            return NotFound();
-        }
+            //var existsCompany = await _companyRepository.GetByName(company.Name)!;
 
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                await _companyRepository.Update(company);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-                
+            await _companyRepository.Update(company);
+
+            _logger.LogWarning($"category updated of id: {id}");
+
             return RedirectToAction(nameof(Index));
         }
+        catch (NotFoundException)
+        {
+            _logger.LogWarning($"company not found of id: {id}");
+            return NotFound();
+        }
+        catch (DuplicationException ex)
+        {
+            _logger.LogWarning($"company alaready exists of name: {company.Name}");
+            ModelState.AddModelError(string.Empty, company.Name + " already exists");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning($"Failed to update data of id: {id}");
+            _logger.LogWarning(ex.Message);
+        }
+
         return View(company);
     }
 

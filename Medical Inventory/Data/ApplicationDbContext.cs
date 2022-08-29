@@ -40,5 +40,5 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Category>? Categories { get; set; }
     public DbSet<Product>? Products { get; set; }
     public DbSet<Generic>? Generic { get; set; }
-    public DbSet<Medical_Inventory.Models.Company>? Company { get; set; }
+    public DbSet<Company>? Company { get; set; }
 }

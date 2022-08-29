@@ -9,4 +9,5 @@ public interface ICompanyRepository
     Task Add(Company entity);
     Task Update(Company entity);
     Task Remove(Company entity);
+    Task<Company?> GetByName(string? name);
 }

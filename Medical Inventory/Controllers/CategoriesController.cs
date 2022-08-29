@@ -96,7 +96,7 @@ public class CategoriesController : Controller
         catch(NotFoundException ex)
         {
             _logger.LogWarning($"category not found of id: {id}");
-            return NotFound();
+            return RedirectToAction("PageNotFound", "Home");
         }
         catch (Exception)
         {
