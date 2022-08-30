@@ -25,9 +25,17 @@ public class CompaniesController : Controller
     // GET: Companies
     public async Task<IActionResult> Index()
     {
-        var result = await _companyRepository.GetAll()!;
+        try
+        {
+            var result = await _companyRepository.GetAll()!;
+            return View(result);
+        }
+        catch (Exception)
+        {
+            _logger.LogError("failed to load categories");
+        }
 
-        return View(result);
+        return View(null);
     }
 
     // GET: Companies/Details/5
@@ -144,13 +152,20 @@ public class CompaniesController : Controller
     // GET: Companies/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        var company = await _companyRepository.GetFirstOrDefault(id)!;
-        if (company == null)
+        try
         {
-            return NotFound();
+            var company = await _companyRepository.GetFirstOrDefault(id)!;
+            if (company != null)
+            {
+                return View(company);
+            }
         }
-
-        return View(company);
+        catch (Exception)
+        {
+            _logger.LogError($"something wrong to find company with id: {id}");
+        }
+        
+        return RedirectToAction("PageNotFound", "Home");
     }
 
     // POST: Companies/Delete/5
@@ -158,11 +173,18 @@ public class CompaniesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var company = await _companyRepository.GetFirstOrDefault(id)!;
-        if (company != null)
+        try
         {
-            await _companyRepository.Remove(company);
+            var company = await _companyRepository.GetFirstOrDefault(id)!;
+            if (company != null)
+            {
+                await _companyRepository.Remove(company);
+            }
         }
+        catch (Exception)
+        {
+            _logger.LogError($"something wrong to find company with id: {id}");
+        }        
             
         return RedirectToAction(nameof(Index));
     }

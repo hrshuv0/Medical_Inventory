@@ -30,9 +30,18 @@ public class GenericsController : Controller
     // GET: Generics
     public async Task<IActionResult> Index()
     {
-        var result = await _genericRepository.GetAll()!;
+        try
+        {
+            var result = await _genericRepository.GetAll()!;
 
-        return View(result);
+            return View(result);
+        }
+        catch (Exception)
+        {
+            _logger.LogError("failed to load generics");
+        }
+
+        return View(null);
     }
 
     // GET: Generics/Details/5

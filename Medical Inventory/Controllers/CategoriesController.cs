@@ -24,9 +24,17 @@ public class CategoriesController : Controller
     // GET: Categories
     public async Task<IActionResult> Index()
     {
-        var categories = await _categoryRepository.GetAll()!;
+        try
+        {
+            var categories = await _categoryRepository.GetAll()!;
+            return View(categories);
+        }
+        catch (Exception)
+        {
+            _logger.LogError("failed to load categories");
+        }        
 
-        return View(categories);
+        return View(null);
     }
 
     // GET: Categories/Details/5
@@ -146,7 +154,7 @@ public class CategoriesController : Controller
 
         if (category == null || id == null)
         {
-            return NotFound();
+            return RedirectToAction("PageNotFound", "Home");
         }
 
         return View(category);
