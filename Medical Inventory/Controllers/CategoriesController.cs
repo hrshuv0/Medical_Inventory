@@ -40,12 +40,13 @@ public class CategoriesController : Controller
         catch(NotFoundException ex)
         {
             _logger.LogWarning(ex.Message);
-            return NotFound();
+            return RedirectToAction("PageNotFound", "Home");
         }
         catch (Exception)
         {
-            throw;
+            _logger.LogWarning($"category not found with id: {id}");
         }
+        return RedirectToAction("PageNotFound", "Home");
     }
 
     // GET: Categories/Create
@@ -76,7 +77,6 @@ public class CategoriesController : Controller
         catch (Exception ex)
         {
             _logger.LogWarning(ex.Message);
-            throw;
         }
 
         if (!ModelState.IsValid) return View(category);        
@@ -95,15 +95,13 @@ public class CategoriesController : Controller
         }
         catch(NotFoundException ex)
         {
-            _logger.LogWarning($"category not found of id: {id}");
-            return RedirectToAction("PageNotFound", "Home");
+            _logger.LogWarning($"category not found of id: {id}");            
         }
         catch (Exception)
         {
 
-            throw;
         }
-        
+        return RedirectToAction("PageNotFound", "Home");
     }
 
     // POST: Categories/Edit/5

@@ -48,28 +48,43 @@ public class Repository<T> : IRepository<T> where T : class
     public async Task<IEnumerable<T>?>? GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties=null)
     {
         IQueryable<T> result = _dbSet;
-        
-        if(filter is not null)
-            result = result.Where(filter);
 
-        var d = result.ToList();
-
-        if (includeProperties is not null && d is not null && d.Any())
+        try
         {
-            foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                result = result.Include(property).DefaultIfEmpty();
+            if (filter is not null)
+                result = result.Where(filter);
+
+            var d = result.ToList();
+
+            if (includeProperties is not null && d is not null && d.Any())
+            {
+                foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    result = result.Include(property).DefaultIfEmpty();
+            }
+
+            var data = await result!.ToListAsync();
+            return data;
+        }
+        catch (Exception)
+        {
+           
         }
 
-        var data = await result!.ToListAsync();
-
-        return data;
+        return await result!.ToListAsync();
     }
 
     
 
     public async Task Add(T entity)
     {
-        await _dbSet.AddAsync(entity);
+        try
+        {
+            await _dbSet.AddAsync(entity);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public void Remove(T entity)

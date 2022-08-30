@@ -1,4 +1,5 @@
-﻿using Medical_Inventory.Models;
+﻿using Medical_Inventory.Exceptions;
+using Medical_Inventory.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,12 +34,19 @@ public class ProductRepository : Repository<Product>, IProductRepository
 
     public async Task<Product?> GetByName(string? name)
     {
-        if (name is null)
-            return null;
+        try
+        {
+            var result = await _dbContext.Products!.FirstOrDefaultAsync(p => p.Name == name);
 
-        var result = await _dbContext.Products!.FirstOrDefaultAsync(p => p.Name == name);
+            if (result is not null)
+                throw new DuplicationException(name!);
 
-        return result;
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public async Task<Product?> GetProductByUserId(string id)

@@ -30,44 +30,47 @@ public class ProductsController : Controller
     // GET: Products
     public async Task<IActionResult> Index(ProductVm? product, string? searchString=null)
     {
-        var categories = await _categoryRepository.GetAll()!;
-
-        if(categories is null)
+        var productVm = new ProductVm();
+        try
         {
-            categories = new List<Category>();
+            var categories = await _categoryRepository.GetAll()!;
+
+            if (categories is null)
+            {
+                categories = new List<Category>();
+
+            }
+
+            var categoryList = categories!.Select(c => new SelectListItem()
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            }).ToList();
+
+
+            // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+
+            var productList = await _productRepository.GetAll(includeProperties: "Category,Generic,Company")!;
+
+            if (productList is null)
+            {
+                productList = new List<Product>();
+            }
+
+            if (searchString is not null)
+                productList = productList!.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
+
+            if (product!.SelectedCategory is not null && product.SelectedCategory.ToLower() != "all")
+                productList = productList!.Where(p => p.Category!.Id.ToString() == product.SelectedCategory);
+
+            productVm.CategoryList = categoryList;
+            productVm.Products = productList!.ToList();
 
         }
-
-        var categoryList = categories!.Select(c => new SelectListItem()
+        catch (Exception ex)
         {
-            Text = c.Name,
-            Value = c.Id.ToString()
-        }).ToList();
-
-        
-        // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
-            
-        var productList = await _productRepository.GetAll(includeProperties:"Category,Generic,Company")!;
-
-        if(productList is null)
-        {
-            productList = new List<Product>();
+            Console.WriteLine("Failed to load product list");
         }
-
-        if(searchString is not null)
-            productList = productList!.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
-
-        if (product!.SelectedCategory is not null && product.SelectedCategory.ToLower() != "all")
-            productList = productList!.Where(p => p.Category!.Id.ToString() == product.SelectedCategory);
-
-
-
-        var productVm = new ProductVm()
-        {
-            CategoryList = categoryList,
-            Products = productList!.ToList()
-        };           
-            
 
         return View(productVm);
     }
