@@ -71,7 +71,7 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
             var result = await _dbContext.Categories!.FirstOrDefaultAsync(p => p.Name == name);
 
             if(result is not null)
-                throw new DuplicationException(name);
+                throw new DuplicationException(name!);
 
             return result;
         }
@@ -79,6 +79,5 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
         {
             throw;
         }
-        return null;
     }
 }
