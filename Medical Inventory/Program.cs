@@ -27,7 +27,7 @@ builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 
 
-
+/*
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = false;
@@ -37,7 +37,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequiredUniqueChars = 1;
     options.Password.RequiredLength = 6;
 })
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddDefaultTokenProviders()
+    .AddEntityFrameworkStores<ApplicationDbContext>();*/
 
 builder.Services.AddAuthentication(options => {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -74,7 +75,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-DbInitializer.Initialize(app).Wait();
+//DbInitializer.Initialize(app).Wait();
 
 app.Run();
 

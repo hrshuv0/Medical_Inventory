@@ -10,6 +10,6 @@ public interface IRepository<T> where T: class
     Task<IEnumerable<T>?>? GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties=null);
     Task Add(T entity);
     void Remove(T entity);
-    IdentityUser? GetFirstOrDefaultUser(string id);
+    //IdentityUser? GetFirstOrDefaultUser(string id);
     Task Save();
 }

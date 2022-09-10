@@ -43,7 +43,7 @@ public class Product
     public DateTime CreatedTime { get; set; }
     public DateTime UpdatedTime { get; set; }
 
-    public string? CreatedById { get; set; }
+    /*public string? CreatedById { get; set; }
     [ForeignKey("CreatedById")]
     [ValidateNever]
     public IdentityUser? CreatedBy { get; set; }
@@ -51,7 +51,7 @@ public class Product
     public string? UpdatedById { get; set; }
     [ForeignKey("UpdatedById")]
     [ValidateNever]
-    public IdentityUser? UpdatedBy { get; set; }
+    public IdentityUser? UpdatedBy { get; set; }*/
     
     
     

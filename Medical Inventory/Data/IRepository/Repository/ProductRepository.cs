@@ -29,7 +29,7 @@ public class ProductRepository : Repository<Product>, IProductRepository
         product.GenericId = obj.GenericId;
         product.CompanyId = obj.CompanyId;
         product.UpdatedTime= DateTime.Now;
-        product.UpdatedById = obj.UpdatedById;
+        //product.UpdatedById = obj.UpdatedById;
     }
 
     public async Task<Product?> GetByName(string? name)
@@ -49,10 +49,10 @@ public class ProductRepository : Repository<Product>, IProductRepository
         }
     }
 
-    public async Task<Product?> GetProductByUserId(string id)
+    /*public async Task<Product?> GetProductByUserId(string id)
     {
         var result = await _dbContext.Products!.Include(u => u.CreatedBy).FirstOrDefaultAsync(u => u.CreatedBy!.Id == id);
 
         return result;
-    }
+    }*/
 }

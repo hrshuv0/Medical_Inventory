@@ -92,12 +92,12 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet.Remove(entity);
     }
 
-    public IdentityUser? GetFirstOrDefaultUser(string id)
+    /*public IdentityUser? GetFirstOrDefaultUser(string id)
     {
         var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
 
         return user;
-    }
+    }*/
 
     public async Task Save()
     {

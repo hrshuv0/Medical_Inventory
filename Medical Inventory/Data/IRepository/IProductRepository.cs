@@ -6,6 +6,6 @@ public interface IProductRepository : IRepository<Product>
 {
     void Update(Product obj);
     Task<Product?> GetByName(string name);
-    Task<Product?> GetProductByUserId(string id);
+    //Task<Product?> GetProductByUserId(string id);
 
 }

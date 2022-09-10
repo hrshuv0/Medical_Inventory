@@ -5,7 +5,7 @@ using System.Reflection.Metadata;
 
 namespace Medical_Inventory.Data;
 
-public class ApplicationDbContext : IdentityDbContext
+public class ApplicationDbContext : DbContext
 {
         public ApplicationDbContext(DbContextOptions options) : base(options)
     {
