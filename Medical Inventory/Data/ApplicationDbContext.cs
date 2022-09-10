@@ -5,9 +5,9 @@ using System.Reflection.Metadata;
 
 namespace Medical_Inventory.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, long>
 {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
@@ -41,4 +41,5 @@ public class ApplicationDbContext : DbContext
     public DbSet<Product>? Products { get; set; }
     public DbSet<Generic>? Generic { get; set; }
     public DbSet<Company>? Company { get; set; }
+    public DbSet<ApplicationUser>? ApplicationUser { get; set; }
 }

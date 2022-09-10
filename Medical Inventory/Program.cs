@@ -2,6 +2,7 @@ using Medical_Inventory.Data;
 using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Data.IRepository.Repository;
 using Medical_Inventory.Data.Seed;
+using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,8 +28,8 @@ builder.Services.AddScoped<IGenericRepository, GenericRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 
 
-/*
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
     options.Password.RequireDigit = false;
     options.Password.RequireUppercase = false;
@@ -38,7 +39,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequiredLength = 6;
 })
     .AddDefaultTokenProviders()
-    .AddEntityFrameworkStores<ApplicationDbContext>();*/
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddAuthentication(options => {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
