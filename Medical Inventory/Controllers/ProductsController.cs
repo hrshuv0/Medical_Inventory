@@ -79,7 +79,7 @@ public class ProductsController : Controller
     }
 
     // GET: Products/Details/5
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(long? id)
     {
         try
         {
@@ -178,7 +178,7 @@ public class ProductsController : Controller
 
     // GET: Products/Edit/5
     [Authorize(Roles = StaticData.RoleAdmin)]
-    public async Task<IActionResult> Edit(int? id)
+    public async Task<IActionResult> Edit(long? id)
     {
         try
         {
@@ -211,7 +211,7 @@ public class ProductsController : Controller
     [Authorize(Roles = StaticData.RoleAdmin)]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId")] Product product)
+    public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId")] Product product)
     {
         // var categoryList = _categoryRepository.GetAll()!.Result;
         // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
@@ -250,7 +250,7 @@ public class ProductsController : Controller
 
     // GET: Products/Delete/5
     [Authorize(Roles = StaticData.RoleAdmin)]
-    public async Task<IActionResult> Delete(int? id)
+    public async Task<IActionResult> Delete(long? id)
     {
         try
         {
@@ -275,7 +275,7 @@ public class ProductsController : Controller
     [Authorize(Roles = StaticData.RoleAdmin)]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(long id)
     {
         try
         {

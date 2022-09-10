@@ -45,7 +45,7 @@ public class GenericsController : Controller
     }
 
     // GET: Generics/Details/5
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(long? id)
     {
         try
         {
@@ -99,7 +99,7 @@ public class GenericsController : Controller
     }
 
     // GET: Generics/Edit/5
-    public async Task<IActionResult> Edit(int? id)
+    public async Task<IActionResult> Edit(long? id)
     {
         try
         {
@@ -121,7 +121,7 @@ public class GenericsController : Controller
     // POST: Generics/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Generic generic)
+    public async Task<IActionResult> Edit(long id, [Bind("Id,Name")] Generic generic)
     {
         try
         {
@@ -153,7 +153,7 @@ public class GenericsController : Controller
     }
 
     // GET: Generics/Delete/5
-    public async Task<IActionResult> Delete(int? id)
+    public async Task<IActionResult> Delete(long? id)
     {
         var generic = await _genericRepository.GetFirstOrDefault(id)!;
         if (generic == null)
@@ -167,7 +167,7 @@ public class GenericsController : Controller
     // POST: Generics/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(long id)
     {
         try
         {

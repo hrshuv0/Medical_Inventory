@@ -14,7 +14,7 @@ public class CompanyRepository : ICompanyRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Company?>? GetFirstOrDefault(int? id)
+    public async Task<Company?>? GetFirstOrDefault(long? id)
     {
         try
         {

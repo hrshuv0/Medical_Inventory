@@ -7,7 +7,7 @@ namespace Medical_Inventory.Models;
 
 public class Product
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     
     [Required]
     [MaxLength(25), MinLength(1)]
@@ -18,7 +18,7 @@ public class Product
     public string Strength { get; set; }
 
     [Display(Name = "Generic")]
-    public int? GenericId { get; set; }  
+    public long? GenericId { get; set; }  
     [ForeignKey("GenericId")]
     [ValidateNever]
     public Generic? Generic { get; set; }
@@ -29,13 +29,13 @@ public class Product
 
  
     [Display(Name = "Category")]
-    public int? CategoryId { get; set; }
+    public long? CategoryId { get; set; }
     [ForeignKey("CategoryId")]
     [ValidateNever]
     public Category? Category { get; set; }
     
     [Display(Name = "Company")]
-    public int? CompanyId { get; set; }
+    public long? CompanyId { get; set; }
     [ForeignKey("CompanyId")]
     [ValidateNever]
     public Company? Company { get; set; }

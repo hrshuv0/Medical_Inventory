@@ -33,7 +33,7 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
 
 
     
-    public void Remove(int id)
+    public void Remove(long id)
     {
         var category = _dbContext.Categories!.FirstOrDefault(c => c.Id == id)!;
 

@@ -13,7 +13,7 @@ public class GenericRepository : IGenericRepository
         _dbContext = dbContext;
     }
 
-    public Task<Generic?>? GetFirstOrDefault(int? id)
+    public Task<Generic?>? GetFirstOrDefault(long? id)
     {
         if (id is null) return null;
 

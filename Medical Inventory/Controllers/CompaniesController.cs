@@ -39,7 +39,7 @@ public class CompaniesController : Controller
     }
 
     // GET: Companies/Details/5
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(long? id)
     {
         try
         {
@@ -94,7 +94,7 @@ public class CompaniesController : Controller
     }
 
     // GET: Companies/Edit/5
-    public async Task<IActionResult> Edit(int? id)
+    public async Task<IActionResult> Edit(long? id)
     {
         try
         {
@@ -118,7 +118,7 @@ public class CompaniesController : Controller
     // POST: Companies/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Phone,Address")] Company company)
+    public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Phone,Address")] Company company)
     {
         try
         {
@@ -150,7 +150,7 @@ public class CompaniesController : Controller
     }
 
     // GET: Companies/Delete/5
-    public async Task<IActionResult> Delete(int? id)
+    public async Task<IActionResult> Delete(long? id)
     {
         try
         {
@@ -171,7 +171,7 @@ public class CompaniesController : Controller
     // POST: Companies/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<IActionResult> DeleteConfirmed(long id)
     {
         try
         {
