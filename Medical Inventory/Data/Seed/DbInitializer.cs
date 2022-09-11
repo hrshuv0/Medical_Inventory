@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Medical_Inventory.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.Seed;
@@ -27,33 +28,33 @@ public static class DbInitializer
 
         try
         {
-            var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
             if (!await roleManager.RoleExistsAsync(StaticData.RoleAdmin))
             {
-                await roleManager.CreateAsync(new IdentityRole(StaticData.RoleAdmin));
-                await roleManager.CreateAsync(new IdentityRole(StaticData.RoleUser));
+                await roleManager.CreateAsync(new ApplicationRole(StaticData.RoleAdmin));
+                await roleManager.CreateAsync(new ApplicationRole(StaticData.RoleUser));
 
 
-                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-                var admin = await userManager.FindByIdAsync("admin");
+                var admin = await userManager.FindByNameAsync("admin");
                 if (admin is null)
                 {
-                    var adminUser = new IdentityUser()
+                    var adminUser = new ApplicationUser()
                     {
                         UserName = "admin"
                     };
-                    await userManager.CreateAsync(adminUser, "1234");
+                    await userManager.CreateAsync(adminUser, "123456");
                     await userManager.AddToRoleAsync(adminUser, StaticData.RoleAdmin);
                 }
-                var user = await userManager.FindByIdAsync("user");
+                var user = await userManager.FindByNameAsync("user");
                 if (user is null)
                 {
-                    var memberUser = new IdentityUser()
+                    var memberUser = new ApplicationUser()
                     {
                         UserName = "user"
                     };
-                    await userManager.CreateAsync(memberUser, "1234");
+                    await userManager.CreateAsync(memberUser, "123456");
                     await userManager.AddToRoleAsync(memberUser, StaticData.RoleUser);
                 }
 

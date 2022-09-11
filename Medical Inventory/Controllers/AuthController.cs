@@ -1,4 +1,5 @@
 ﻿using Medical_Inventory.Data;
+using Medical_Inventory.Models;
 using Medical_Inventory.Models.ViewModel.AuthViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,11 +8,11 @@ namespace Medical_Inventory.Controllers;
 
     public class AuthController : Controller
     {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager)
+    public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -37,7 +38,7 @@ namespace Medical_Inventory.Controllers;
                 return View(model);
             }
 
-            var newUser = new IdentityUser()
+            var newUser = new ApplicationUser()
             {
                 UserName = model.UserName
             };

@@ -11,7 +11,7 @@ using Medical_Inventory.Exceptions;
 
 namespace Medical_Inventory.Controllers;
 
-//[Authorize]
+[Authorize]
 public class ProductsController : Controller
 {
     private readonly ILogger<ProductsController> _logger;
@@ -146,14 +146,14 @@ public class ProductsController : Controller
             var companyList = _companyRepository.GetAll()!.Result;
             ViewData["CompanyId"] = new SelectList(companyList, "Id", "Name");
 
-            var existsProduct = await _productRepository.GetByName(product.Name)!;
+            var existsProduct = await _productRepository.GetByName(product.Name!)!;
 
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             product.CreatedTime = DateTime.Now;
             product.UpdatedTime = DateTime.Now;
-            /*product.CreatedById = userId;
-            product.UpdatedById = userId;*/
+            product.CreatedById = long.Parse(userId);
+            product.UpdatedById = long.Parse(userId);
 
             await _productRepository.Add(product);
             await _productRepository.Save();
@@ -219,27 +219,27 @@ public class ProductsController : Controller
         {
             //var existsCategory = await _productRepository.GetByName(product.Name)!;
 
-            /*var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            product.UpdatedById = userId;*/
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            product.UpdatedById = long.Parse(userId);
 
             _productRepository.Update(product);
             await _productRepository.Save();
 
-            _logger.LogWarning($"product updated of id: {id}");
+            _logger.LogWarning("product updated of id: {Id}", id);
         }
         catch (NotFoundException)
         {
-            _logger.LogWarning($"product not found of id: {id}");
+            _logger.LogWarning("product not found of id: {Id}", id);
             return NotFound();
         }
         catch (DuplicationException ex)
         {
-            _logger.LogWarning($"category alaready exists of name: {product.Name}");
+            _logger.LogWarning("category already exists of name: {ProductName}", product.Name);
             ModelState.AddModelError(string.Empty, product.Name + " already exists");
         }
         catch (Exception ex)
         {
-            _logger.LogWarning($"Failed to update data of id: {id}");
+            _logger.LogWarning("Failed to update data of id: {Id}", id);
             _logger.LogWarning(ex.Message);
         }
 

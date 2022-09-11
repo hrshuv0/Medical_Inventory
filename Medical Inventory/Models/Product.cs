@@ -11,11 +11,11 @@ public class Product
     
     [Required]
     [MaxLength(25), MinLength(1)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
     [Required]
     [StringLength(10, ErrorMessage ="max length must be 10")]
-    public string Strength { get; set; }
+    public string? Strength { get; set; }
 
     [Display(Name = "Generic")]
     public long? GenericId { get; set; }  
@@ -43,17 +43,17 @@ public class Product
     public DateTime CreatedTime { get; set; }
     public DateTime UpdatedTime { get; set; }
 
-    /*public string? CreatedById { get; set; }
+    public  long? CreatedById { get; set; }
     [ForeignKey("CreatedById")]
     [ValidateNever]
-    public IdentityUser? CreatedBy { get; set; }
+    public ApplicationUser? CreatedBy { get; set; }
 
-    public string? UpdatedById { get; set; }
+    public long? UpdatedById { get; set; }
     [ForeignKey("UpdatedById")]
     [ValidateNever]
-    public IdentityUser? UpdatedBy { get; set; }*/
-    
-    
-    
-    
+    public ApplicationUser? UpdatedBy { get; set; }
+
+
+
+
 }
