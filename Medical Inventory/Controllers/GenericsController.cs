@@ -15,7 +15,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Medical_Inventory.Controllers;
 
-//[Authorize(Roles = StaticData.RoleAdmin)]
+[Authorize(Roles = StaticData.RoleAdmin)]
 public class GenericsController : Controller
 {
     private readonly ILogger<CompaniesController> _logger;

@@ -9,7 +9,7 @@ using Medical_Inventory.Exceptions;
 
 namespace Medical_Inventory.Controllers;
 
-//[Authorize(Roles = StaticData.RoleAdmin)]
+[Authorize(Roles = StaticData.RoleAdmin)]
 public class CompaniesController : Controller
 {
     private readonly ILogger<CompaniesController> _logger;
