@@ -38,13 +38,9 @@ public class ProductsController : Controller
         {
             var categories = await _categoryRepository.GetAll()!;
 
-            if (categories is null)
-            {
-                categories = new List<Category>();
+            categories ??= new List<Category>();
 
-            }
-
-            var categoryList = categories!.Select(c => new SelectListItem()
+            var categoryList = categories.Select(c => new SelectListItem()
             {
                 Text = c.Name,
                 Value = c.Id.ToString()
@@ -55,13 +51,10 @@ public class ProductsController : Controller
 
             var productList = await _productRepository.GetAll(includeProperties: "Category,Generic,Company")!;
 
-            if (productList is null)
-            {
-                productList = new List<Product>();
-            }
+            productList ??= new List<Product>();
 
             if (searchString is not null)
-                productList = productList!.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
+                productList = productList!.Where(p => p.Name!.ToLower().Contains(searchString.ToLower()));
 
             if (product!.SelectedCategory is not null && product.SelectedCategory.ToLower() != "all")
                 productList = productList!.Where(p => p.Category!.Id.ToString() == product.SelectedCategory);
@@ -72,7 +65,7 @@ public class ProductsController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to load product list");
+            _logger.LogError(ex.Message);
         }
 
         return View(productVm);

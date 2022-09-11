@@ -38,11 +38,11 @@ public class CategoriesController : Controller
     }
 
     // GET: Categories/Details/5
-    public async Task<IActionResult> Details(int? id)
+    public async Task<IActionResult> Details(long id)
     {
         try
         {
-            var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id)!;
+            var category = await _categoryRepository.GetFirstOrDefault(id)!;
             return View(category);
         }
         catch(NotFoundException ex)
@@ -93,11 +93,11 @@ public class CategoriesController : Controller
     }
 
     // GET: Categories/Edit/5
-    public async Task<IActionResult> Edit(int? id)
+    public async Task<IActionResult> Edit(long id)
     {
         try
         {
-            var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id)!;
+            var category = await _categoryRepository.GetFirstOrDefault(id)!;
 
             return View(category);
         }
@@ -148,9 +148,9 @@ public class CategoriesController : Controller
     }
 
     // GET: Categories/Delete/5
-    public async Task<IActionResult> Delete(int? id)
+    public async Task<IActionResult> Delete(long id)
     {
-        var category = await _categoryRepository.GetFirstOrDefault(c => c.Id == id)!;
+        var category = await _categoryRepository.GetFirstOrDefault(id)!;
 
         if (category == null || id == null)
         {

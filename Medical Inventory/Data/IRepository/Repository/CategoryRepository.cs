@@ -4,16 +4,62 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
 
-public class CategoryRepository : Repository<Category>, ICategoryRepository
+public class CategoryRepository : ICategoryRepository
 {
     private readonly ApplicationDbContext _dbContext;
     
-    public CategoryRepository(ApplicationDbContext dbContext) : base(dbContext)
+
+    public CategoryRepository(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
-    
-    public async void Update(Category obj)
+
+
+
+    public async Task<Category?>? GetFirstOrDefault(long id)
+    {
+        try
+        {
+            var category = await _dbContext.Categories!.FirstOrDefaultAsync(c => c.Id == id)!;
+
+            return category;
+        }
+        catch (Exception)
+        {
+            // ignored
+        }
+
+        return null;
+    }
+    public async Task<IEnumerable<Category>?>? GetAll()
+    {
+        try
+        {
+            var categoryList = await _dbContext.Categories!.ToListAsync();
+
+            return categoryList;
+        }
+        catch (Exception)
+        {
+
+        }
+        return null;
+    }
+
+    public async Task Add(Category entity)
+    {
+        try
+        {
+            await _dbContext.Categories!.AddAsync(entity);
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public void Update(Category obj)
     {
         try
         {
@@ -24,15 +70,13 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
 
             category.Name = obj.Name;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
-            throw;
+            //
         }
     }
 
 
-    
     public void Remove(long id)
     {
         var category = _dbContext.Categories!.FirstOrDefault(c => c.Id == id)!;
@@ -59,11 +103,14 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
             }
             _dbContext.SaveChanges();
         }
-        
-        
-        Remove(category);
-    }
 
+
+        //Remove(category);
+    }
+    public async Task Save()
+    {
+        await _dbContext.SaveChangesAsync();
+    }
     public async Task<Category?> GetByName(string? name)
     {
         try
@@ -80,4 +127,10 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
             throw;
         }
     }
+
+ 
+
+
+
+    
 }
