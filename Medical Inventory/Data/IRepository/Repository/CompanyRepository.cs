@@ -118,7 +118,6 @@ public class CompanyRepository : ICompanyRepository
         {
             throw;
         }
-        return null;
     }
 
     

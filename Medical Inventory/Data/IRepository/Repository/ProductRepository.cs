@@ -5,32 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
 
-public class ProductRepository : Repository<Product>, IProductRepository
+public class ProductRepository : IProductRepository
 {
     private readonly ApplicationDbContext _dbContext;
     
-    public ProductRepository(ApplicationDbContext dbContext) : base(dbContext)
+    public ProductRepository(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
     
-    public void Update(Product obj)
-    {
-        var product = _dbContext.Products!.DefaultIfEmpty().FirstOrDefault(c => c.Id == obj.Id)!;
-        //var product = _dbContext.Products!.Where(p => p.Id == obj.Id).FirstOrDefault();
-
-        if (product is null) return;
-
-        product.Name = obj.Name;
-        product.Strength = obj.Strength;
-        product.Generic = obj.Generic;
-        product.Details = obj.Details;
-        product.CategoryId = obj.CategoryId;
-        product.GenericId = obj.GenericId;
-        product.CompanyId = obj.CompanyId;
-        product.UpdatedTime= DateTime.Now;
-        //product.UpdatedById = obj.UpdatedById;
-    }
+    
 
     public async Task<Product?> GetByName(string? name)
     {
@@ -47,6 +31,111 @@ public class ProductRepository : Repository<Product>, IProductRepository
         {
             throw;
         }
+    }
+
+    public async Task<Product?>? GetFirstOrDefault(long id)
+    {
+        try
+        {
+            var product = await _dbContext.Products!
+                .Include(p => p.Category)
+                .Include(p => p.Generic)
+                .Include(p => p.Company)
+                .Include(p =>p.UpdatedBy)
+                .Include(p => p.CreatedBy)
+                .Where(p => p.Id == id)
+                .DefaultIfEmpty()
+                .FirstOrDefaultAsync();
+
+            return product;
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Product>?>? GetAll()
+    {
+        try
+        {
+            var productList = await _dbContext.Products!
+                .Include(p => p.Category)
+                .Include(p => p.Generic)
+                .Include(p => p.Company)
+                .DefaultIfEmpty()
+                .ToListAsync();
+
+            return productList;
+        }
+        catch (Exception)
+        {
+
+        }
+        return null;
+    }
+
+    public async Task Add(Product entity)
+    {
+        try
+        {
+            await _dbContext.Products!.AddAsync(entity);
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public void Update(Product obj)
+    {
+        var product = _dbContext.Products!.DefaultIfEmpty().FirstOrDefault(c => c.Id == obj.Id)!;
+        //var product = _dbContext.Products!.Where(p => p.Id == obj.Id).FirstOrDefault();
+
+        if (product is null) return;
+
+        product.Name = obj.Name;
+        product.Strength = obj.Strength;
+        product.Generic = obj.Generic;
+        product.Details = obj.Details;
+        product.CategoryId = obj.CategoryId;
+        product.GenericId = obj.GenericId;
+        product.CompanyId = obj.CompanyId;
+        product.UpdatedTime = DateTime.Now;
+        product.UpdatedById = obj.UpdatedById;
+    }
+
+    public void Remove(long id)
+    {
+        try
+        {
+            var product = _dbContext.Products!.Where(p => p.Id == id).FirstOrDefault();
+
+            if (product is null) return;
+
+            //_dbContext.Remove(product);
+            _dbContext.Products!.Remove(product);
+            
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+    public async Task Save()
+    {
+        await _dbContext.SaveChangesAsync();
+    }
+
+    async Task<Product?> IProductRepository.GetByName(string name)
+    {
+        var product = await _dbContext.Products!.Where(p => p.Name == name).FirstOrDefaultAsync();
+
+        return product;
     }
 
     /*public async Task<Product?> GetProductByUserId(string id)

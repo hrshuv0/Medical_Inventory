@@ -49,7 +49,7 @@ public class ProductsController : Controller
 
             // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
 
-            var productList = await _productRepository.GetAll(includeProperties: "Category,Generic,Company")!;
+            var productList = await _productRepository.GetAll()!;
 
             productList ??= new List<Product>();
 
@@ -72,22 +72,17 @@ public class ProductsController : Controller
     }
 
     // GET: Products/Details/5
-    public async Task<IActionResult> Details(long? id)
+    public async Task<IActionResult> Details(long id)
     {
         try
         {
-            var product = await _productRepository.GetFirstOrDefault(c => c.Id == id, includeProperties: "Category,Generic,Company")!;
-            /*var createdBy = _productRepository.GetFirstOrDefaultUser(product.CreatedById!);
-            var updatedBy = _productRepository.GetFirstOrDefaultUser(product.UpdatedById!);
-
-            product.CreatedBy = createdBy;
-            product.UpdatedBy = updatedBy;*/
+            var product = await _productRepository.GetFirstOrDefault(id)!;
 
             return View(product);
         }
         catch (NotFoundException ex)
         {
-            _logger.LogWarning($"product not found with id: {id}");
+            _logger.LogWarning($"product not found with id: {id}\n" + ex.Message);
         }
         catch (Exception ex)
         {
@@ -171,11 +166,11 @@ public class ProductsController : Controller
 
     // GET: Products/Edit/5
     [Authorize(Roles = StaticData.RoleAdmin)]
-    public async Task<IActionResult> Edit(long? id)
+    public async Task<IActionResult> Edit(long id)
     {
         try
         {
-            var product = await _productRepository.GetFirstOrDefault(p => p.Id == id, includeProperties: "Category,Generic,Company")!;
+            var product = await _productRepository.GetFirstOrDefault(id)!;
 
             var categoryList = await _categoryRepository.GetAll()!;
             ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
@@ -243,11 +238,11 @@ public class ProductsController : Controller
 
     // GET: Products/Delete/5
     [Authorize(Roles = StaticData.RoleAdmin)]
-    public async Task<IActionResult> Delete(long? id)
+    public async Task<IActionResult> Delete(long id)
     {
         try
         {
-            var product = await _productRepository.GetFirstOrDefault(c => c.Id == id, includeProperties: "Category,Generic,Company")!;
+            var product = await _productRepository.GetFirstOrDefault(id)!;
             
             return View(product);
         }
@@ -272,9 +267,7 @@ public class ProductsController : Controller
     {
         try
         {
-            var product = await _productRepository.GetFirstOrDefault(c => c.Id == id, includeProperties: "Category,Generic,Company")!;
-
-            _productRepository.Remove(product);
+            _productRepository.Remove(id);
             await _productRepository.Save();
 
             return RedirectToAction(nameof(Index));
@@ -302,8 +295,8 @@ public class ProductsController : Controller
     {
         try
         {
-            var productList = await _productRepository.GetAll(includeProperties: "Category,Generic,Company")!;
-            productList = productList!.OrderByDescending(p => p.UpdatedTime);
+            var productList = await _productRepository.GetAll()!;
+            //productList = productList!.OrderByDescending(p => p.UpdatedTime);
 
             if (id is not null && id.ToLower() != "all")
                 productList = productList!.Where(p => p.CategoryId.ToString() == id);
