@@ -103,7 +103,7 @@ public class CategoriesController : Controller
         }
         catch(NotFoundException ex)
         {
-            _logger.LogWarning($"category not found of id: {id}");            
+            _logger.LogWarning($"category not found of id: {id}\n" + ex);            
         }
         catch (Exception)
         {
@@ -135,7 +135,7 @@ public class CategoriesController : Controller
         }
         catch (DuplicationException ex)
         {
-            _logger.LogWarning($"category alaready exists of name: {category.Name}");
+            _logger.LogWarning($"category alaready exists of name: {category.Name}\n" + ex);
             ModelState.AddModelError(string.Empty, category.Name + " already exists");
         }
         catch (Exception ex)
@@ -152,7 +152,7 @@ public class CategoriesController : Controller
     {
         var category = await _categoryRepository.GetFirstOrDefault(id)!;
 
-        if (category == null || id == null)
+        if (category == null)
         {
             return RedirectToAction("PageNotFound", "Home");
         }
@@ -172,9 +172,9 @@ public class CategoriesController : Controller
 
             _logger.LogWarning($"Deleted data of id: {id}");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            _logger.LogWarning($"Failed to delete data of id: {id}");
+            _logger.LogWarning($"Failed to delete data of id: {id}\n" + ex.Message);
         }        
 
         return RedirectToAction(nameof(Index));
