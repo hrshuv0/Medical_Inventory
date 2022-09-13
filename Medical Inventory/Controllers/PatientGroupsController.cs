@@ -7,42 +7,58 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Medical_Inventory.Data;
 using Medical_Inventory.Models;
+using Medical_Inventory.Data.IRepository;
+using Medical_Inventory.Data.IRepository.Repository;
+using Medical_Inventory.Exceptions;
 
 namespace Medical_Inventory.Controllers
 {
     public class PatientGroupsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ILogger<PatientGroupsController> _logger;
+        private readonly IPatientGroupRepository _patientGroupRepository;
 
-        public PatientGroupsController(ApplicationDbContext context)
+        public PatientGroupsController(ILogger<PatientGroupsController> logger, IPatientGroupRepository patientGroupRepository)
         {
-            _context = context;
+            _logger = logger;
+            _patientGroupRepository = patientGroupRepository;
         }
 
         // GET: PatientGroups
         public async Task<IActionResult> Index()
         {
-              return _context.PatientGroup != null ? 
-                          View(await _context.PatientGroup.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.PatientGroup'  is null.");
+            try
+            {
+                var categories = await _patientGroupRepository.GetAll()!;
+                return View(categories);
+            }
+            catch (Exception)
+            {
+                _logger.LogError("failed to load patient groups");
+            }
+
+            return View(null);
         }
 
         // GET: PatientGroups/Details/5
-        public async Task<IActionResult> Details(long? id)
+        public async Task<IActionResult> Details(long id)
         {
-            if (id == null || _context.PatientGroup == null)
+            try
             {
-                return NotFound();
+                var category = await _patientGroupRepository.GetFirstOrDefault(id)!;
+                return View(category);
             }
-
-            var patientGroup = await _context.PatientGroup
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (patientGroup == null)
+            catch (NotFoundException ex)
             {
-                return NotFound();
+                _logger.LogWarning(ex.Message);
+                return RedirectToAction("PageNotFound", "Home");
             }
+            catch (Exception)
+            {
+                _logger.LogWarning($"patient group not found with id: {id}");
+            }
+            return RedirectToAction("PageNotFound", "Home");
 
-            return View(patientGroup);
         }
 
         // GET: PatientGroups/Create
@@ -52,85 +68,98 @@ namespace Medical_Inventory.Controllers
         }
 
         // POST: PatientGroups/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] PatientGroup patientGroup)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(patientGroup);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var existsCategory = await _patientGroupRepository.GetByName(patientGroup.Name)!;
+
+                await _patientGroupRepository.Add(patientGroup);
+                await _patientGroupRepository.Save();
+
+                _logger.LogInformation(message: $"new category added with name of {patientGroup.Name}");
             }
-            return View(patientGroup);
+            catch (DuplicationException ex)
+            {
+                ModelState.AddModelError(string.Empty, patientGroup.Name + " already exists");
+                _logger.LogWarning(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+            }
+
+            if (!ModelState.IsValid) return View(patientGroup);
+
+            return RedirectToAction(nameof(Index));
+
         }
 
         // GET: PatientGroups/Edit/5
-        public async Task<IActionResult> Edit(long? id)
+        public async Task<IActionResult> Edit(long id)
         {
-            if (id == null || _context.PatientGroup == null)
+            try
             {
-                return NotFound();
-            }
+                var category = await _patientGroupRepository.GetFirstOrDefault(id)!;
 
-            var patientGroup = await _context.PatientGroup.FindAsync(id);
-            if (patientGroup == null)
-            {
-                return NotFound();
+                return View(category);
             }
-            return View(patientGroup);
+            catch (NotFoundException ex)
+            {
+                _logger.LogWarning($"patient group not found of id: {id}\n" + ex);
+            }
+            catch (Exception)
+            {
+
+            }
+            return RedirectToAction("PageNotFound", "Home");
         }
 
         // POST: PatientGroups/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name")] PatientGroup patientGroup)
         {
-            if (id != patientGroup.Id)
+            try
             {
-                return NotFound();
-            }
+                var existsPatientGroup = await _patientGroupRepository.GetByName(patientGroup.Name)!;
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(patientGroup);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PatientGroupExists(patientGroup.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _patientGroupRepository.Update(patientGroup);
+                await _patientGroupRepository.Save();
+
+                _logger.LogWarning($"patient group updated of id: {id}");
+
                 return RedirectToAction(nameof(Index));
             }
+            catch (NotFoundException)
+            {
+                _logger.LogWarning($"patient group not found of id: {id}");
+                return NotFound();
+            }
+            catch (DuplicationException ex)
+            {
+                _logger.LogWarning($"patient group alaready exists of name: {patientGroup.Name}\n" + ex);
+                ModelState.AddModelError(string.Empty, patientGroup.Name + " already exists");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Failed to update data of id: {id}");
+                _logger.LogWarning(ex.Message);
+            }
+
             return View(patientGroup);
         }
 
         // GET: PatientGroups/Delete/5
-        public async Task<IActionResult> Delete(long? id)
+        public async Task<IActionResult> Delete(long id)
         {
-            if (id == null || _context.PatientGroup == null)
-            {
-                return NotFound();
-            }
+            var patientGroup = await _patientGroupRepository.GetFirstOrDefault(id)!;
 
-            var patientGroup = await _context.PatientGroup
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (patientGroup == null)
             {
-                return NotFound();
+                return RedirectToAction("PageNotFound", "Home");
             }
 
             return View(patientGroup);
@@ -141,23 +170,20 @@ namespace Medical_Inventory.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            if (_context.PatientGroup == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.PatientGroup'  is null.");
+                _patientGroupRepository.Remove(id);
+                await _patientGroupRepository.Save();
+
+                _logger.LogWarning($"Deleted data of id: {id}");
             }
-            var patientGroup = await _context.PatientGroup.FindAsync(id);
-            if (patientGroup != null)
+            catch (Exception ex)
             {
-                _context.PatientGroup.Remove(patientGroup);
+                _logger.LogWarning($"Failed to delete data of id: {id}\n" + ex.Message);
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PatientGroupExists(long id)
-        {
-          return (_context.PatientGroup?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
 }
