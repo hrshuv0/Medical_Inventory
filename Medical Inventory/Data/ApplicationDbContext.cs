@@ -1,4 +1,4 @@
-using Medical_Inventory.Models;
+﻿using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
@@ -42,4 +42,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<Generic>? Generic { get; set; }
     public DbSet<Company>? Company { get; set; }
     public DbSet<ApplicationUser>? ApplicationUser { get; set; }
+    public DbSet<PatientGroup>? PatientGroup { get; set; }
 }
