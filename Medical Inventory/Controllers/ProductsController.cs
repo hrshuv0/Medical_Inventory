@@ -19,14 +19,17 @@ public class ProductsController : Controller
     private readonly ICategoryRepository _categoryRepository;
     private readonly IGenericRepository _genericRepository;
     private readonly ICompanyRepository _companyRepository;
+    private readonly IPatientGroupRepository _patientGroupRepository;
 
-    public ProductsController(ILogger<ProductsController> logger, IProductRepository productRepository, ICategoryRepository categoryRepository, IGenericRepository genericRepository, ICompanyRepository companyRepository)
+
+    public ProductsController(ILogger<ProductsController> logger, IProductRepository productRepository, ICategoryRepository categoryRepository, IGenericRepository genericRepository, ICompanyRepository companyRepository, IPatientGroupRepository patientGroupRepository)
     {
         _logger = logger;
         _productRepository = productRepository;
         _categoryRepository = categoryRepository;
         _genericRepository = genericRepository;
         _companyRepository = companyRepository;
+        _patientGroupRepository = patientGroupRepository;
     }
 
 
@@ -96,6 +99,9 @@ public class ProductsController : Controller
     //[Authorize(Roles = StaticData.RoleAdmin)]
     public IActionResult Create()
     {
+        var product = new Product();
+        product.RecommandedPatients = new List<RecommandedPatient>();
+
         try
         {
             var categoryList = _categoryRepository.GetAll()!.Result;
@@ -108,20 +114,23 @@ public class ProductsController : Controller
 
             var companyList = _companyRepository.GetAll()!.Result;
             ViewData["CompanyId"] = new SelectList(companyList, "Id", "Name");
+
+
+            PopulateAssignedRecommandedPatient(product);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);            
         }
             
-        return View();
+        return View(product);
     }
 
     // POST: Products/Create
     //[Authorize(Roles = StaticData.RoleAdmin)]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId")] Product product)
+    public async Task<IActionResult> Create([Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId")] Product product, string[] selectedPg)
     {
         try
         {
@@ -142,6 +151,25 @@ public class ProductsController : Controller
             product.UpdatedTime = DateTime.Now;
             product.CreatedById = long.Parse(userId);
             product.UpdatedById = long.Parse(userId);
+
+            await _productRepository.Add(product);
+            await _productRepository.Save();
+
+            /*if (selectedPg != null)
+            {
+                product.RecommandedPatients = new List<RecommandedPatient>();
+                foreach(var patientGroup in selectedPg)
+                {
+                    var rPatient = new RecommandedPatient()
+                    {
+                        ProductId = product.Id,
+                        PatientGroupId = long.Parse(patientGroup)
+                    };
+                    product.RecommandedPatients.Add(rPatient);
+                }
+            }*/
+
+
 
             await _productRepository.Add(product);
             await _productRepository.Save();
@@ -284,6 +312,23 @@ public class ProductsController : Controller
         return RedirectToAction("PageNotFound", "Home");
     }
 
+    private void PopulateAssignedRecommandedPatient(Product product)
+    {
+        var patientGroupList = _patientGroupRepository.GetAll()!.GetAwaiter().GetResult();
+        var recommandedPatientList = new HashSet<long>(product.RecommandedPatients!.Select(p => p.PatientGroupId));        
+        var viewModel = new List<AssignedPatientGroup>();
+
+        foreach(var patientGroup in patientGroupList!)
+        {
+            viewModel.Add(new AssignedPatientGroup
+            {
+                PatientGroupId = patientGroup.Id,
+                PatientGroupName=patientGroup.Name,
+                Assigned = recommandedPatientList.Contains(patientGroup.Id)
+            });
+        }
+        ViewData["PatientGroupList"] = viewModel;
+    }
     
 
 

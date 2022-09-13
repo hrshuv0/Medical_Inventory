@@ -54,6 +54,6 @@ public class Product
     public ApplicationUser? UpdatedBy { get; set; }
 
 
-
+    public IList<RecommandedPatient>? RecommandedPatients { get; set; }
 
 }
