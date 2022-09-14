@@ -13,8 +13,7 @@ public class ProductRepository : IProductRepository
     {
         _dbContext = dbContext;
     }
-    
-    
+        
 
     public async Task<Product?> GetByName(string? name)
     {
@@ -43,6 +42,9 @@ public class ProductRepository : IProductRepository
                 .Include(p => p.Company)
                 .Include(p =>p.UpdatedBy)
                 .Include(p => p.CreatedBy)
+                .Include(p => p.RecommandedPatients)!
+                .ThenInclude(r => r.PatientGroup)
+                .AsNoTracking()
                 .Where(p => p.Id == id)
                 .DefaultIfEmpty()
                 .FirstOrDefaultAsync();
@@ -91,20 +93,32 @@ public class ProductRepository : IProductRepository
 
     public void Update(Product obj)
     {
-        var product = _dbContext.Products!.DefaultIfEmpty().FirstOrDefault(c => c.Id == obj.Id)!;
-        //var product = _dbContext.Products!.Where(p => p.Id == obj.Id).FirstOrDefault();
+        try
+        {
+            var product = _dbContext.Products!
+                .DefaultIfEmpty()
+                .FirstOrDefault(c => c.Id == obj.Id)!;
+            //var product = _dbContext.Products!.Where(p => p.Id == obj.Id).FirstOrDefault();
 
-        if (product is null) return;
+            if (product is null) return;
 
-        product.Name = obj.Name;
-        product.Strength = obj.Strength;
-        product.Generic = obj.Generic;
-        product.Details = obj.Details;
-        product.CategoryId = obj.CategoryId;
-        product.GenericId = obj.GenericId;
-        product.CompanyId = obj.CompanyId;
-        product.UpdatedTime = DateTime.Now;
-        product.UpdatedById = obj.UpdatedById;
+            product.Name = obj.Name;
+            product.Strength = obj.Strength;
+            product.Generic = obj.Generic;
+            product.Details = obj.Details;
+            product.CategoryId = obj.CategoryId;
+            product.GenericId = obj.GenericId;
+            product.CompanyId = obj.CompanyId;
+            product.UpdatedTime = DateTime.Now;
+            product.UpdatedById = obj.UpdatedById;
+            product.RecommandedPatients = obj.RecommandedPatients;
+
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
     }
 
     public void Remove(long id)
@@ -126,9 +140,9 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task Save()
+    public void Save()
     {
-        await _dbContext.SaveChangesAsync();
+        _dbContext.SaveChanges();
     }
 
     async Task<Product?> IProductRepository.GetByName(string name)
@@ -144,4 +158,21 @@ public class ProductRepository : IProductRepository
 
         return result;
     }*/
+
+    public void Remove(long productId, long id)
+    {
+        try
+        {
+            var rPatient = _dbContext.RecommandedPatient!.FirstOrDefault(i => i.ProductId == productId && i.PatientGroupId == id);
+            _dbContext.RecommandedPatient!.Remove(rPatient!);
+
+            //_context.SaveChanges();
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
+    }
 }

@@ -9,8 +9,9 @@ public interface IProductRepository
     Task Add(Product entity);
     void Update(Product obj);
     void Remove(long id);
-    Task Save();
+    void Save();
 
     Task<Product?> GetByName(string name);
+    void Remove(long productId, long id);
 
 }

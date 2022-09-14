@@ -43,4 +43,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
     public DbSet<Company>? Company { get; set; }
     public DbSet<ApplicationUser>? ApplicationUser { get; set; }
     public DbSet<PatientGroup>? PatientGroup { get; set; }
+    public DbSet<RecommandedPatient>? RecommandedPatient { get; set; }
 }

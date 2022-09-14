@@ -20,9 +20,10 @@ public class ProductsController : Controller
     private readonly IGenericRepository _genericRepository;
     private readonly ICompanyRepository _companyRepository;
     private readonly IPatientGroupRepository _patientGroupRepository;
+    private readonly IRecommendedPatientRepository _recommendedPatientRepository;
 
 
-    public ProductsController(ILogger<ProductsController> logger, IProductRepository productRepository, ICategoryRepository categoryRepository, IGenericRepository genericRepository, ICompanyRepository companyRepository, IPatientGroupRepository patientGroupRepository)
+    public ProductsController(ILogger<ProductsController> logger, IProductRepository productRepository, ICategoryRepository categoryRepository, IGenericRepository genericRepository, ICompanyRepository companyRepository, IPatientGroupRepository patientGroupRepository, IRecommendedPatientRepository recommendedPatientRepository)
     {
         _logger = logger;
         _productRepository = productRepository;
@@ -30,6 +31,7 @@ public class ProductsController : Controller
         _genericRepository = genericRepository;
         _companyRepository = companyRepository;
         _patientGroupRepository = patientGroupRepository;
+        _recommendedPatientRepository = recommendedPatientRepository;
     }
 
 
@@ -153,7 +155,7 @@ public class ProductsController : Controller
             product.UpdatedById = long.Parse(userId);
 
             await _productRepository.Add(product);
-            await _productRepository.Save();
+            _productRepository.Save();
 
             /*if (selectedPg != null)
             {
@@ -172,7 +174,7 @@ public class ProductsController : Controller
 
 
             await _productRepository.Add(product);
-            await _productRepository.Save();
+            _productRepository.Save();
 
             _logger.LogInformation(message: $"new category added with name of {product.Name}");
         }
@@ -209,6 +211,11 @@ public class ProductsController : Controller
             var companyList = _companyRepository.GetAll()!.Result;
             ViewData["CompanyId"] = new SelectList(companyList, "Id", "Name");
 
+            if (product == null)
+                return NotFound();
+
+            PopulateAssignedRecommandedPatient(product);
+
             return View(product);
         }
         catch (NotFoundException )
@@ -227,7 +234,7 @@ public class ProductsController : Controller
     //[Authorize(Roles = StaticData.RoleAdmin)]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId")] Product product)
+    public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId, RecommandedPatients")] Product product, string[] selectedPg)
     {
         // var categoryList = _categoryRepository.GetAll()!.Result;
         // ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
@@ -238,10 +245,16 @@ public class ProductsController : Controller
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             product.UpdatedById = long.Parse(userId);
 
+            product.RecommandedPatients ??= new List<RecommandedPatient>();
+
             _productRepository.Update(product);
-            await _productRepository.Save();
+            _productRepository.Save();
+
+            UpdateProductRecommanded(selectedPg, product);
+            _productRepository.Save();
 
             _logger.LogWarning("product updated of id: {Id}", id);
+            return RedirectToAction(nameof(Index));
         }
         catch (NotFoundException)
         {
@@ -255,14 +268,64 @@ public class ProductsController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogWarning("Failed to update data of id: {Id}", id);
+            //ModelState.AddModelError(string.Empty, ex.Message);
+            _logger.LogError("Failed to update data of id: {Id}", id);
             _logger.LogWarning(ex.Message);
         }
 
+        var categoryList = await _categoryRepository.GetAll()!;
+        ViewData["CategoryId"] = new SelectList(categoryList, "Id", "Name");
+
+        var genericList = _genericRepository.GetAll()!.Result;
+        ViewData["GenericId"] = new SelectList(genericList, "Id", "Name");
+
+        var companyList = _companyRepository.GetAll()!.Result;
+        ViewData["CompanyId"] = new SelectList(companyList, "Id", "Name");
+
+        PopulateAssignedRecommandedPatient(product);
         if (!ModelState.IsValid) return View(product);
 
         return RedirectToAction(nameof(Index));
     }
+
+    private void UpdateProductRecommanded(string[] selectedGroup, Product product)
+    {
+        if(selectedGroup == null)
+        {
+            product.RecommandedPatients = new List<RecommandedPatient>();
+            return;
+        }
+
+        var selectedGroupHS = new HashSet<string>(selectedGroup); // new selected
+        var productRecommanded = new HashSet<long>(product.RecommandedPatients!.Select(p => p.PatientGroupId)); //prev selected
+        var patientGroupList = _patientGroupRepository.GetAll()!.GetAwaiter().GetResult(); // total type
+
+        foreach(var pGroup in patientGroupList!)
+        {
+            if(selectedGroupHS.Contains(pGroup.Id.ToString()))
+            {
+                if(!productRecommanded.Contains(pGroup.Id))
+                {
+                    product.RecommandedPatients!.Add(new RecommandedPatient
+                    {
+                        ProductId = product.Id,
+                        PatientGroupId = pGroup.Id,
+                    });
+                }
+            }
+            else
+            {
+                if(productRecommanded.Contains(pGroup.Id))
+                {
+                    _productRepository.Remove(product.Id, pGroup.Id);
+                }
+            }
+        }
+
+
+
+    }
+
 
     // GET: Products/Delete/5
     //[Authorize(Roles = StaticData.RoleAdmin)]
@@ -296,7 +359,7 @@ public class ProductsController : Controller
         try
         {
             _productRepository.Remove(id);
-            await _productRepository.Save();
+            _productRepository.Save();
 
             return RedirectToAction(nameof(Index));
         }
