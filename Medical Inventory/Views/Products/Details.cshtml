@@ -9,6 +9,12 @@
 
 <div>
     <h4>Product</h4>
+    <div class="row">
+        @foreach(var item in Model.RecommandedPatients!)
+        {
+            <p class="col btn btn-outline-info ms-2" style="max-width:150px"><strong>@item.PatientGroup.Name</strong></p>
+        }
+    </div>
     <hr/>
     <dl class="row">
 
