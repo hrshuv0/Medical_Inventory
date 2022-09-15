@@ -13,5 +13,6 @@ public interface ICategoryRepository
     Task Save();
     
     Task<Category?> GetByName(string name);
+    Task<Category?> GetByName(string name, long id);
 
 }

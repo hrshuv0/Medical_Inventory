@@ -11,7 +11,7 @@ using Medical_Inventory.Exceptions;
 
 namespace Medical_Inventory.Controllers;
 
-//[Authorize]
+[Authorize]
 public class ProductsController : Controller
 {
     private readonly ILogger<ProductsController> _logger;
@@ -98,7 +98,7 @@ public class ProductsController : Controller
     }
 
     // GET: Products/Create
-    //[Authorize(Roles = StaticData.RoleAdmin)]
+    [Authorize(Roles = StaticData.RoleAdmin)]
     public IActionResult Create()
     {
         var product = new Product();
@@ -191,7 +191,7 @@ public class ProductsController : Controller
     }
 
     // GET: Products/Edit/5
-   // [Authorize(Roles = StaticData.RoleAdmin)]
+   [Authorize(Roles = StaticData.RoleAdmin)]
     public async Task<IActionResult> Edit(long id)
     {
         try
@@ -227,7 +227,7 @@ public class ProductsController : Controller
     }
 
     // POST: Products/Edit/5
-    //[Authorize(Roles = StaticData.RoleAdmin)]
+    [Authorize(Roles = StaticData.RoleAdmin)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Strength,Generic,Details,CategoryId,GenericId, CompanyId, RecommandedPatients")] Product product, string[] selectedPg)
@@ -324,7 +324,7 @@ public class ProductsController : Controller
 
 
     // GET: Products/Delete/5
-    //[Authorize(Roles = StaticData.RoleAdmin)]
+    [Authorize(Roles = StaticData.RoleAdmin)]
     public async Task<IActionResult> Delete(long id)
     {
         try
@@ -347,7 +347,7 @@ public class ProductsController : Controller
     }
 
     // POST: Products/Delete/5
-    //[Authorize(Roles = StaticData.RoleAdmin)]
+    [Authorize(Roles = StaticData.RoleAdmin)]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(long id)
@@ -393,7 +393,7 @@ public class ProductsController : Controller
 
     #region API CALLS
 
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public async Task<IActionResult> GetAll(string? id)
     {

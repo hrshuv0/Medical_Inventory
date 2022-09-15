@@ -4,6 +4,7 @@ using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Authorization;
 using Medical_Inventory.Exceptions;
+using System.Security.Claims;
 
 namespace Medical_Inventory.Controllers;
 
@@ -72,6 +73,12 @@ public class CategoriesController : Controller
         {
             var existsCategory = await _categoryRepository.GetByName(category.Name)!;
 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            category.CreatedTime = DateTime.Now;
+            category.UpdatedTime = DateTime.Now;
+            category.CreatedById = long.Parse(userId);
+            category.UpdatedById = long.Parse(userId);
+
             await _categoryRepository.Add(category);
             await _categoryRepository.Save();
 
@@ -119,7 +126,10 @@ public class CategoriesController : Controller
     {
         try
         {
-            var existsCategory = await _categoryRepository.GetByName(category.Name)!;
+            var existsCategory = await _categoryRepository.GetByName(category.Name, id)!;
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            category.UpdatedById = long.Parse(userId);
 
             _categoryRepository.Update(category);
             await _categoryRepository.Save();

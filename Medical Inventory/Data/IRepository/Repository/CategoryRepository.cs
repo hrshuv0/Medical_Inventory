@@ -20,7 +20,11 @@ public class CategoryRepository : ICategoryRepository
     {
         try
         {
-            var category = await _dbContext.Categories!.FirstOrDefaultAsync(c => c.Id == id)!;
+            var category = await _dbContext.Categories!
+                .Include(c => c.CreatedBy)
+                .Include(c => c.UpdatedBy)
+                .DefaultIfEmpty()
+                .FirstOrDefaultAsync(c => c.Id == id)!;
 
             return category;
         }
@@ -35,7 +39,10 @@ public class CategoryRepository : ICategoryRepository
     {
         try
         {
-            var categoryList = await _dbContext.Categories!.ToListAsync();
+            var categoryList = await _dbContext.Categories!
+                .Include(c => c.CreatedBy)
+                .Include(c => c.UpdatedBy)
+                .DefaultIfEmpty().ToListAsync();
 
             return categoryList;
         }
@@ -69,6 +76,7 @@ public class CategoryRepository : ICategoryRepository
                 throw new NotFoundException("");
 
             category.Name = obj.Name;
+            category.UpdatedTime = DateTime.Now;
         }
         catch (Exception ex)
         {
@@ -128,9 +136,31 @@ public class CategoryRepository : ICategoryRepository
         }
     }
 
- 
+    public async Task<Category?> GetByName(string name, long id)
+    {
+        try
+        {
+            var result = await _dbContext.Categories!.FirstOrDefaultAsync(p => p.Name == name);
+
+            if (result is not null)
+            {
+                if(result.Id != id)
+                    throw new DuplicationException(name!);
+            }
+                
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 
 
 
-    
+
+
+
+
 }
