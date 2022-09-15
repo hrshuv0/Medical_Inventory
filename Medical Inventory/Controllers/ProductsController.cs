@@ -145,9 +145,10 @@ public class ProductsController : Controller
             var companyList = _companyRepository.GetAll()!.Result;
             ViewData["CompanyId"] = new SelectList(companyList, "Id", "Name");
 
-            var existsProduct = await _productRepository.GetByName(product.Name!)!;
+            var existsProduct = await _productRepository.GetByName(product.Name!, product.Id)!; // check duplication
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            product.RecommandedPatients ??= new List<RecommandedPatient>();
 
             product.CreatedTime = DateTime.Now;
             product.UpdatedTime = DateTime.Now;
@@ -157,25 +158,18 @@ public class ProductsController : Controller
             await _productRepository.Add(product);
             _productRepository.Save();
 
-            /*if (selectedPg != null)
+            var productTemp = _productRepository.GetByName(product.Name).GetAwaiter().GetResult()!;
+
+            if(product is null)
             {
-                product.RecommandedPatients = new List<RecommandedPatient>();
-                foreach(var patientGroup in selectedPg)
-                {
-                    var rPatient = new RecommandedPatient()
-                    {
-                        ProductId = product.Id,
-                        PatientGroupId = long.Parse(patientGroup)
-                    };
-                    product.RecommandedPatients.Add(rPatient);
-                }
-            }*/
+                throw new Exception("Failed to saave changes");
+            }
+            product.Id = productTemp.Id;
 
-
-
-            await _productRepository.Add(product);
+            UpdateProductRecommanded(selectedPg, product);
             _productRepository.Save();
 
+            
             _logger.LogInformation(message: $"new category added with name of {product.Name}");
         }
         catch (DuplicationException ex)
@@ -188,6 +182,8 @@ public class ProductsController : Controller
             _logger.LogWarning(ex.Message);
         }
 
+        product.RecommandedPatients ??= new List<RecommandedPatient>();
+        PopulateAssignedRecommandedPatient(product);
         if (!ModelState.IsValid) return View(product);
                 
         return RedirectToAction(nameof(Index));

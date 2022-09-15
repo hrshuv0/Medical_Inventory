@@ -21,10 +21,27 @@ public class ProductRepository : IProductRepository
         {
             var result = await _dbContext.Products!.FirstOrDefaultAsync(p => p.Name == name);
 
-            if (result is not null)
-                throw new DuplicationException(name!);
-
             return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    async Task<Product?> IProductRepository.GetByName(string name, long id)
+    {
+        try
+        {
+            var product = await _dbContext.Products!.Where(p => p.Name == name).FirstOrDefaultAsync();
+
+            if (product is not null)
+            {
+                if (product!.Id != id)
+                    throw new DuplicationException(name);
+            }
+            return product;
+
         }
         catch (Exception)
         {
@@ -145,13 +162,8 @@ public class ProductRepository : IProductRepository
         _dbContext.SaveChanges();
     }
 
-    async Task<Product?> IProductRepository.GetByName(string name)
-    {
-        var product = await _dbContext.Products!.Where(p => p.Name == name).FirstOrDefaultAsync();
 
-        return product;
-    }
-
+  
     /*public async Task<Product?> GetProductByUserId(string id)
     {
         var result = await _dbContext.Products!.Include(u => u.CreatedBy).FirstOrDefaultAsync(u => u.CreatedBy!.Id == id);

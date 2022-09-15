@@ -8,89 +8,109 @@
 <h1>Create</h1>
 
 <h4>Product</h4>
-<hr />
+<hr/>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-12">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Strength" class="control-label"></label>
-                <input asp-for="Strength" class="form-control" />
-                <span asp-validation-for="Strength" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="GenericId" class="control-label"></label>
-                <select asp-for="GenericId" class="form-control" asp-items="ViewBag.GenericId">
-                    <option disabled selected>-- Select Generic --</option>
-                </select>
-                <span asp-validation-for="GenericId" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="Details" class="control-label"></label>
-                <input asp-for="Details" class="form-control" />
-                <span asp-validation-for="Details" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
-                    <option disabled selected>-- Select Category --</option>
-                </select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="CompanyId" class="control-label"></label>
-                <select asp-for="CompanyId" class="form-control" asp-items="ViewBag.CompanyId">
-                    <option disabled selected>-- Select Company --</option>
-                </select>
-                <span asp-validation-for="CompanyId" class="text-danger"></span>
-            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
+                    @*<input type="hidden" asp-for="RecommandedPatients"/>*@
+                    @for(int i = 0; i < @Model.RecommandedPatients!.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.RecommandedPatients[i].Id"/>
+                        <input type="hidden" asp-for="@Model.RecommandedPatients[i].PatientGroupId"/>
 
-            <div class="form-group">
-                <div class="mt-2">
-                    <table>
-                        <tr>
-                            @{
-                                int cnt = 0;
+                    }
 
-                                List<AssignedPatientGroup> pGroupList = ViewBag.PatientGroupList;
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control"/>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Strength" class="control-label"></label>
+                        <input asp-for="Strength" class="form-control"/>
+                        <span asp-validation-for="Strength" class="text-danger"></span>
+                    </div>
 
-                                foreach(var pGroup in pGroupList)
-                                {
-                                    @:<td >
-                                        <div class=" border-info border p-1 m-1">
-                                        <input  type="checkbox"
-                                                name="selectedPg"
-                                                value="@pGroup.PatientGroupId"
-                                                @(Html.Raw(pGroup.Assigned ? "checked=\"checked\"":"")!)/>
+                    <div class="form-group">
+                        <label asp-for="GenericId" class="control-label"></label>
+                        <select asp-for="GenericId" class="form-control" asp-items="ViewBag.GenericId">
+                            <option disabled selected>-- Select Generic --</option>
+                        </select>
+                        <span asp-validation-for="GenericId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Details" class="control-label"></label>
+                        <input asp-for="Details" class="form-control"/>
+                        <span asp-validation-for="Details" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CategoryId" class="control-label"></label>
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId">
+                            <option disabled selected>-- Select Category --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CompanyId" class="control-label"></label>
+                        <select asp-for="CompanyId" class="form-control" asp-items="ViewBag.CompanyId">
+                            <option disabled selected>-- Select Company --</option>
+                        </select>
+                        <span asp-validation-for="CompanyId" class="text-danger"></span>
+                    </div>
+
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <div class="mt-2">
+                            <table>
+                                <tr>
+                                    @{
+                                        int cnt = 0;
+
+                                        List<AssignedPatientGroup> pGroupList = ViewBag.PatientGroupList;
+
+                                        foreach (var pGroup in pGroupList)
+                                        {
+                                            if (cnt++ % 3 == 0)
+                                            {
+                                                @:</tr><tr>
+                                            }
+
+                                            @:<td >
+                                            <div class="border p-1 m-1 text-center" style="min-width:100px; border-color: #cfdae3">
+                                                <input type="checkbox"
+                                                       name="selectedPg"
+                                                       value="@pGroup.PatientGroupId"
+                                                       @(Html.Raw(pGroup.Assigned ? "checked=\"checked\"" : "")!)
+                                                       style="accent-color: #20c997;"/>
                                                 @pGroup.PatientGroupName
-                                        </div>
-                                        
-                                    @:</td>
-                                }
+                                            </div>
+
+                                            @:</td>
+                                        }
 
 
-                            }
-                        </tr>
-                    </table>
+                                    }
+                                </tr>
+                            </table>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
 
-            
-            
             <div class="form-group mt-2">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary"/>
             </div>
         </form>
     </div>
@@ -101,5 +121,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

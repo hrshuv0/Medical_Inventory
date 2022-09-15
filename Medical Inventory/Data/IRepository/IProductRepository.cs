@@ -11,7 +11,8 @@ public interface IProductRepository
     void Remove(long id);
     void Save();
 
-    Task<Product?> GetByName(string name);
+    Task<Product?> GetByName(string? name);
+    Task<Product?> GetByName(string name, long id);
     void Remove(long productId, long id);
-
+    
 }
