@@ -17,14 +17,21 @@ public class GenericRepository : IGenericRepository
     {
         if (id is null) return null;
 
-        var result = _dbContext.Generic!.FirstOrDefaultAsync(c => c.Id == id);
+        var result = _dbContext.Generic!
+            .Include(c => c.CreatedBy)
+            .Include(c => c.UpdatedBy)
+            .DefaultIfEmpty()
+            .FirstOrDefaultAsync(c => c.Id == id);
 
         return result;
     }
 
     public async Task<IEnumerable<Generic>?> GetAll()
     {
-        var result = _dbContext.Generic!;
+        var result = _dbContext.Generic!
+            .Include(c => c.CreatedBy)
+            .Include(c => c.UpdatedBy)
+            .DefaultIfEmpty();
 
         var data = await result.ToListAsync();
 
@@ -37,17 +44,22 @@ public class GenericRepository : IGenericRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task Update(Generic entity)
+    public void Update(Generic entity)
     {
         try
         {
-            _dbContext.Generic!.Update(entity);
-            await _dbContext.SaveChangesAsync();
+            var category = _dbContext.Generic!.FirstOrDefault(c => c.Id == entity.Id);
+
+            if (category is null)
+                throw new NotFoundException("");
+
+            category.Name = entity.Name;
+            category.UpdatedTime = DateTime.Now;
+            category.UpdatedById = entity.UpdatedById;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine(e);
-            throw;
+            //
         }
     }
 
@@ -92,7 +104,32 @@ public class GenericRepository : IGenericRepository
         {
             throw;
         }
-        return null;
+    }
+
+    public async Task<Generic?> GetByName(string name, long id)
+    {
+        try
+        {
+            var result = await _dbContext.Generic!.FirstOrDefaultAsync(p => p.Name == name);
+
+            if (result is not null)
+            {
+                if (result.Id != id)
+                    throw new DuplicationException(name!);
+            }
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+    }
+
+    public async Task Save()
+    {
+        await _dbContext.SaveChangesAsync();
     }
 }
 

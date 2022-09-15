@@ -7,11 +7,11 @@
 <h1>Patient Group</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-outline-success">Create New</a>
 </p>
-<table class="table">
+<table class="table table-striped border table-bordered">
     <thead>
-        <tr>
+        <tr class="text-center">
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -39,19 +39,26 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedBy!.UserName)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatedTime)
+                <td class="text-center">
+                    @if (DateTime.MinValue != item.CreatedTime)
+                    {
+                        @Html.DisplayFor(modelItem => item.CreatedTime)
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.UpdatedBy!.UserName)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UpdatedTime)
+                <td class="text-center">
+                    @if(DateTime.MinValue != item.UpdatedTime)
+                    {
+                        @Html.DisplayFor(modelItem => item.UpdatedTime)
+                    }
+                    
                 </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            <td class="text-center">
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary w-25">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info w-25 ms-1">Details</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-warning w-25 ms-1">Delete</a>
             </td>
         </tr>
 }

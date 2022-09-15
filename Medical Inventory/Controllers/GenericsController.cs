@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Medical_Inventory.Data.IRepository.Repository;
 using Medical_Inventory.Exceptions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Security.Claims;
 
 namespace Medical_Inventory.Controllers;
 
@@ -78,7 +79,15 @@ public class GenericsController : Controller
         try
         {
             var existsGeneric = await _genericRepository.GetByName(generic.Name)!;
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            generic.CreatedTime = DateTime.Now;
+            generic.UpdatedTime = DateTime.Now;
+            generic.CreatedById = long.Parse(userId);
+            generic.UpdatedById = long.Parse(userId);
+
             await _genericRepository.Add(generic);
+            await _genericRepository.Save();
 
             _logger.LogInformation(message: $"new generic added with name of {generic.Name}");
         }
@@ -125,9 +134,13 @@ public class GenericsController : Controller
     {
         try
         {
-            var existsCompany = await _genericRepository.GetByName(generic.Name)!;
+            var existsCompany = await _genericRepository.GetByName(generic.Name, id)!;
 
-            await _genericRepository.Update(generic);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            generic.UpdatedById = long.Parse(userId);
+
+            _genericRepository.Update(generic);
+            await _genericRepository.Save();
 
             _logger.LogWarning($"generic updated of id: {id}");
 
@@ -145,7 +158,7 @@ public class GenericsController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogWarning($"Failed to update generic of id: {id}");
+            _logger.LogError($"Failed to update generic of id: {id}");
             _logger.LogWarning(ex.Message);
         }
 

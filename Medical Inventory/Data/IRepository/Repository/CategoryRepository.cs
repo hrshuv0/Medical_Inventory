@@ -146,8 +146,7 @@ public class CategoryRepository : ICategoryRepository
             {
                 if(result.Id != id)
                     throw new DuplicationException(name!);
-            }
-                
+            }                
 
             return result;
         }

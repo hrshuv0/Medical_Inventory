@@ -4,18 +4,30 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Generic List</h1>
 
 <p>
-    <a class="btn btn-success"  asp-action="Create">Create New</a>
+    <a class="btn btn-outline-success" asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-bordered table-striped">
     <thead>
-        <tr>
+        <tr class="text-center">
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedTime)
+            </th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -23,11 +35,29 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary" style="width: 100px">Edit</a> 
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info" style="width: 100px">Details</a> 
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-warning" style="width: 100px">Delete</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedBy!.UserName)
+                </td>
+                <td>
+                    @if (DateTime.MinValue != item.CreatedTime)
+                    {
+                        @Html.DisplayFor(modelItem => item.CreatedTime)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedBy!.UserName)
+                </td>
+                <td>
+                    @if (DateTime.MinValue != item.UpdatedTime)
+                    {
+                        @Html.DisplayFor(modelItem => item.UpdatedTime)
+                    }
+                </td>
+            <td class="text-center">
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" style="width: 100px">Edit</a> 
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" style="width: 100px">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-warning" style="width: 100px">Delete</a>
             </td>
         </tr>
 }
