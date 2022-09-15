@@ -14,6 +14,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Applicati
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Category>().ToTable("Category");
+        modelBuilder.Entity<Generic>().ToTable("Generic");
+        modelBuilder.Entity<Company>().ToTable("Company");
+        modelBuilder.Entity<Product>().ToTable("Product");
+        modelBuilder.Entity<ApplicationUser>().ToTable("ApplicationUser");
+        modelBuilder.Entity<PatientGroup>().ToTable("PatientGroup");
+        modelBuilder.Entity<RecommandedPatient>().ToTable("RecommandedPatient");
+
         modelBuilder
             .Entity<Category>()
             .HasMany(c => c.Products)
