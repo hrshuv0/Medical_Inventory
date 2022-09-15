@@ -83,6 +83,8 @@ public class CategoriesController : Controller
             await _categoryRepository.Save();
 
             _logger.LogInformation(message: $"new category added with name of {category.Name}");
+
+            return RedirectToAction(nameof(Index));
         }
         catch(DuplicationException ex)
         {

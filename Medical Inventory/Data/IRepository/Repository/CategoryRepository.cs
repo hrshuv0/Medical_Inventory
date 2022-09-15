@@ -87,33 +87,41 @@ public class CategoryRepository : ICategoryRepository
 
     public void Remove(long id)
     {
-        var category = _dbContext.Categories!.FirstOrDefault(c => c.Id == id)!;
-
-        if (category is null) return;
-
-        var products = from p in _dbContext.Products!
-                       .Include(p => p.Category)
-                       .DefaultIfEmpty()
-                       .Where(p => p.Category!.Id == id)
-                       select p;
-        
-        
-        if (products is not null)
+        try
         {
-            foreach (var product in products)
+            var category = _dbContext.Categories!.FirstOrDefault(c => c.Id == id)!;
+
+            if (category is null) return;
+
+            var products = from p in _dbContext.Products!
+                           .Include(p => p.Category)
+                           .DefaultIfEmpty()
+                           .Where(p => p.Category!.Id == id)
+                           select p;
+
+
+            if (products is not null)
             {
-                if(product.CategoryId == id)
+                foreach (var product in products)
                 {
-                    product.Category = null;
-                    product.CategoryId = null;
+                    if (product.CategoryId == id)
+                    {
+                        product.Category = null;
+                        product.CategoryId = null;
+                    }
+
                 }
-                
+                _dbContext.SaveChanges();
             }
-            _dbContext.SaveChanges();
+
+            _dbContext.Categories!.Remove(category);
+            _dbContext.SaveChanges(true);
         }
+        catch (Exception)
+        {
 
-
-        //Remove(category);
+            throw;
+        }
     }
     public async Task Save()
     {
