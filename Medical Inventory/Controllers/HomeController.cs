@@ -1,4 +1,5 @@
-﻿using Medical_Inventory.Models;
+﻿using Medical_Inventory.Data.IRepository;
+using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +8,28 @@ namespace Medical_Inventory.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IProductRepository _productRepository;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IProductRepository productRepository)
     {
         _logger = logger;
+        _productRepository = productRepository;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        try
+        {
+            var productList = await _productRepository.GetAll()!;
+            return View(productList);
+        }
+        catch(Exception)
+        {
+            _logger.LogError("Failed to lost product list");
+        }
+        
+
+        return View(new List<Product>());
     }
 
     public IActionResult Privacy()

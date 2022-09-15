@@ -83,6 +83,8 @@ public class ProductRepository : IProductRepository
                 .Include(p => p.Category)
                 .Include(p => p.Generic)
                 .Include(p => p.Company)
+                .Include(p => p.RecommandedPatients)!
+                .ThenInclude(r => r.PatientGroup)
                 .DefaultIfEmpty()
                 .ToListAsync();
 

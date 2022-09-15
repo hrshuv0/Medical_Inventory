@@ -1,8 +1,47 @@
-﻿@{
+﻿@model IList<Product>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div class="container" >
+
+    <div class="row">
+    @foreach(var product in Model)
+    {       
+            <div class="card ms-2 mt-2" style="width:20rem; min-height:200px">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        @if (product.Generic is not null)
+                        {
+                            @product.Generic!.Name
+                        }
+                        </h6>
+                    <p class="card-text">
+                        @if (product.Details is not null)
+                        {
+                            @product.Details
+                        }
+                    </p>
+                </div>
+                <div class="card-footer">
+                    @foreach(var item in product.RecommandedPatients!)
+                    {
+                        <a  class="btn btn-outline-info mt-1" style="text-decoration:none">@item.PatientGroup.Name</a>
+                    }
+
+                </div>
+                
+
+            </div>
+        
+
+
+    }
+    </div>
+    
+
 </div>
