@@ -146,8 +146,6 @@ public class CompanyRepository : ICompanyRepository
                 if (result.Id != id)
                     throw new DuplicationException(name!);
             }
-
-
             return result;
         }
         catch (Exception)

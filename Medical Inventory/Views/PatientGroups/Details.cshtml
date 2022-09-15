@@ -17,6 +17,32 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
     </dl>
+    <dl class="row">
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.CreatedBy!.UserName)
+        </dd>
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.CreatedTime)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.CreatedTime)
+        </dd>
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.UpdatedBy)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.UpdatedBy!.UserName)
+        </dd>
+        <dt class="col-4">
+            @Html.DisplayNameFor(model => model.UpdatedTime)
+        </dt>
+        <dd class="col-8">
+            @Html.DisplayFor(model => model.UpdatedTime)
+        </dd>
+    </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

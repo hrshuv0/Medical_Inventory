@@ -31,7 +31,11 @@ public class PatientGroupRepository : IPatientGroupRepository
     {
         try
         {
-            var pGroup = await _dbContext.PatientGroup!.ToListAsync();
+            var pGroup = await _dbContext.PatientGroup!
+                .Include(p => p.CreatedBy)
+                .Include(p => p.UpdatedBy)
+                .DefaultIfEmpty()
+                .ToListAsync();
 
             return pGroup;
         }
@@ -59,11 +63,35 @@ public class PatientGroupRepository : IPatientGroupRepository
         }
     }
 
+    public async Task<PatientGroup?> GetByName(string name, long id)
+    {
+        try
+        {
+            var result = await _dbContext.PatientGroup!.FirstOrDefaultAsync(p => p.Name == name && p.Id == id);
+
+            if(result is not null)
+            {
+                if(result.Id != id)
+                {
+                    throw new DuplicationException(name!);
+                }
+            }
+            return result;
+        }
+        catch(Exception)
+        {
+            throw;
+        }
+    }
+
     public async Task<PatientGroup?>? GetFirstOrDefault(long id)
     {
         try
         {
-            var pGroup = await _dbContext.PatientGroup!.FirstOrDefaultAsync(c => c.Id == id)!;
+            var pGroup = await _dbContext.PatientGroup!
+                .Include(p => p.CreatedBy)
+                .Include(p => p.UpdatedBy)
+                .DefaultIfEmpty().FirstOrDefaultAsync(c => c.Id == id)!;
 
             return pGroup;
         }
@@ -81,7 +109,7 @@ public class PatientGroupRepository : IPatientGroupRepository
         {
             var entity = _dbContext.PatientGroup!.FirstOrDefault(p => p.Id == id);
 
-            _dbContext.Remove(entity);
+            _dbContext.PatientGroup!.Remove(entity!);
 
         }
         catch (Exception)
@@ -105,6 +133,8 @@ public class PatientGroupRepository : IPatientGroupRepository
                 throw new NotFoundException("");
 
             pGroup.Name = obj.Name;
+            pGroup.UpdatedTime = DateTime.Now;
+            pGroup.UpdatedById = obj.UpdatedById;
         }
         catch (Exception)
         {

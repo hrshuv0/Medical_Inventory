@@ -10,6 +10,7 @@ using Medical_Inventory.Models;
 using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Data.IRepository.Repository;
 using Medical_Inventory.Exceptions;
+using System.Security.Claims;
 
 namespace Medical_Inventory.Controllers
 {
@@ -76,6 +77,12 @@ namespace Medical_Inventory.Controllers
             {
                 var existsCategory = await _patientGroupRepository.GetByName(patientGroup.Name)!;
 
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+                patientGroup.CreatedTime = DateTime.Now;
+                patientGroup.UpdatedTime = DateTime.Now;
+                patientGroup.CreatedById = long.Parse(userId);
+                patientGroup.UpdatedById = long.Parse(userId);
+
                 await _patientGroupRepository.Add(patientGroup);
                 await _patientGroupRepository.Save();
 
@@ -124,7 +131,10 @@ namespace Medical_Inventory.Controllers
         {
             try
             {
-                var existsPatientGroup = await _patientGroupRepository.GetByName(patientGroup.Name)!;
+                var existsPatientGroup = await _patientGroupRepository.GetByName(patientGroup.Name, id)!;
+
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+                patientGroup.UpdatedById = long.Parse(userId);
 
                 _patientGroupRepository.Update(patientGroup);
                 await _patientGroupRepository.Save();

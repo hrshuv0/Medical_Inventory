@@ -13,4 +13,5 @@ public interface IPatientGroupRepository
     Task Save();
 
     Task<PatientGroup?> GetByName(string name);
+    Task<PatientGroup?> GetByName(string name, long id);
 }
