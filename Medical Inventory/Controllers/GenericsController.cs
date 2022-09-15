@@ -16,7 +16,7 @@ using System.Security.Claims;
 
 namespace Medical_Inventory.Controllers;
 
-[Authorize(Roles = StaticData.RoleAdmin)]
+[Authorize]
 public class GenericsController : Controller
 {
     private readonly ILogger<CompaniesController> _logger;
@@ -90,6 +90,7 @@ public class GenericsController : Controller
             await _genericRepository.Save();
 
             _logger.LogInformation(message: $"new generic added with name of {generic.Name}");
+            return RedirectToAction(nameof(Index));
         }
         catch (DuplicationException ex)
         {
