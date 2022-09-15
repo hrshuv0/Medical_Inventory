@@ -18,7 +18,10 @@ public class CompanyRepository : ICompanyRepository
     {
         try
         {
-            var result = await _dbContext.Company!.FirstOrDefaultAsync(c => c.Id == id);
+            var result = await _dbContext.Company!
+                .Include(c => c.CreatedBy)
+                .Include(c => c.UpdatedBy)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (result is null)
                 throw new NotFoundException("");
@@ -35,7 +38,10 @@ public class CompanyRepository : ICompanyRepository
 
     public async Task<IEnumerable<Company>?> GetAll()
     {
-        var result = _dbContext.Company!;
+        var result = _dbContext.Company!
+            .Include(c => c.UpdatedBy)
+            .Include(c => c.CreatedBy)
+            .DefaultIfEmpty();
 
         var data = await result.ToListAsync();
 
@@ -64,16 +70,24 @@ public class CompanyRepository : ICompanyRepository
         
     }
 
-    public async Task Update(Company entity)
+    public void Update(Company entity)
     {
         try
         {
-            _dbContext.Company!.Update(entity);
-            await _dbContext.SaveChangesAsync();
+            var company = _dbContext.Company!.FirstOrDefault(c => c.Id == entity.Id);
+
+            if (company is null)
+                throw new NotFoundException("");
+
+            company.Name = entity.Name;
+            company.Phone = entity.Phone;
+            company.Address = entity.Address;
+            company.UpdatedTime = DateTime.Now;
+            company.UpdatedById = entity.UpdatedById;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            //Console.WriteLine(e);
             throw;
         }
     }
@@ -120,6 +134,33 @@ public class CompanyRepository : ICompanyRepository
         }
     }
 
-    
+
+    public async Task<Company?> GetByName(string name, long id)
+    {
+        try
+        {
+            var result = await _dbContext.Company!.FirstOrDefaultAsync(p => p.Name == name);
+
+            if (result is not null)
+            {
+                if (result.Id != id)
+                    throw new DuplicationException(name!);
+            }
+
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+
+    public async Task Save()
+    {
+        await _dbContext.SaveChangesAsync();
+    }
+
 }
 

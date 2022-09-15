@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Medical_Inventory.Data.IRepository.Repository;
 using System.Data;
 using Medical_Inventory.Exceptions;
+using System.Security.Claims;
 
 namespace Medical_Inventory.Controllers;
 
@@ -73,6 +74,12 @@ public class CompaniesController : Controller
         {
             var existsCompany = await _companyRepository.GetByName(company.Name)!;
 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            company.CreatedTime = DateTime.Now;
+            company.UpdatedTime = DateTime.Now;
+            company.CreatedById = long.Parse(userId);
+            company.UpdatedById = long.Parse(userId);
+
             await _companyRepository.Add(company);
 
             _logger.LogInformation(message: $"new company added with name of {company.Name}");
@@ -122,9 +129,13 @@ public class CompaniesController : Controller
     {
         try
         {
-            //var existsCompany = await _companyRepository.GetByName(company.Name)!;
+            var existsCompany = await _companyRepository.GetByName(company.Name, id)!;
 
-            await _companyRepository.Update(company);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            company.UpdatedById = long.Parse(userId);
+
+            _companyRepository.Update(company);
+            await _companyRepository.Save();
 
             _logger.LogWarning($"category updated of id: {id}");
 
