@@ -83,6 +83,7 @@ public class CompaniesController : Controller
             await _companyRepository.Add(company);
 
             _logger.LogInformation(message: $"new company added with name of {company.Name}");
+            return RedirectToAction(nameof(Index));
         }
         catch (DuplicationException ex)
         {
