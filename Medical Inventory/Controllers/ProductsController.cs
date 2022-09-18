@@ -36,7 +36,7 @@ public class ProductsController : Controller
 
 
     // GET: Products
-    public async Task<IActionResult> Index(ProductVm? product, string? searchString=null)
+    public async Task<IActionResult> Index(ProductVm? product)
     {
         var productVm = new ProductVm();
         try
@@ -57,12 +57,6 @@ public class ProductsController : Controller
             var productList = await _productRepository.GetAll()!;
 
             productList ??= new List<Product>();
-
-            if (searchString is not null)
-                productList = productList!.Where(p => p.Name!.ToLower().Contains(searchString.ToLower()));
-
-            if (product!.SelectedCategory is not null && product.SelectedCategory.ToLower() != "all")
-                productList = productList!.Where(p => p.Category!.Id.ToString() == product.SelectedCategory);
 
             productVm.CategoryList = categoryList;
             productVm.Products = productList!.ToList();
@@ -399,11 +393,15 @@ public class ProductsController : Controller
     {
         try
         {
-            var productList = await _productRepository.GetAll()!;
+            var productList = new List<Product>();
             //productList = productList!.OrderByDescending(p => p.UpdatedTime);
 
             if (id is not null && id.ToLower() != "all")
-                productList = productList!.Where(p => p.CategoryId.ToString() == id);
+                productList = await _productRepository.GetAll(categoryId:long.Parse(id))!;
+            else
+            {
+                productList = await _productRepository.GetAll()!;
+            }
 
             return Json(new { data = productList });
         }

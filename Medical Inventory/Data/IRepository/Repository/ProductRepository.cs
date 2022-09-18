@@ -75,11 +75,13 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<IEnumerable<Product>?>? GetAll()
+    public async Task<List<Product>?>? GetAll(long? categoryId = null)
     {
         try
         {
-            var productList = await _dbContext.Products!
+            if(categoryId == null)
+            {
+                var productList = await _dbContext.Products!
                 .Include(p => p.Category)
                 .Include(p => p.Generic)
                 .Include(p => p.Company)
@@ -88,7 +90,23 @@ public class ProductRepository : IProductRepository
                 .DefaultIfEmpty()
                 .ToListAsync();
 
-            return productList;
+                return productList;
+            }
+            else
+            {
+                var productList = await _dbContext.Products!
+                .Include(p => p.Category)
+                .Include(p => p.Generic)
+                .Include(p => p.Company)
+                .Include(p => p.RecommandedPatients)!
+                .ThenInclude(r => r.PatientGroup)
+                .Where(p => p.CategoryId == categoryId)
+                .DefaultIfEmpty()
+                .ToListAsync();
+
+                return productList;
+            }
+            
         }
         catch (Exception)
         {
