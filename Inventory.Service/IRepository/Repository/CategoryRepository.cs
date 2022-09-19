@@ -1,10 +1,9 @@
 ﻿using Entities;
 using Inventory.DAL.DbContext;
-using Medical_Inventory.Exceptions;
-using Medical_Inventory.Models;
+using Inventory.Utility.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Medical_Inventory.Data.IRepository.Repository;
+namespace Inventory.Service.IRepository.Repository;
 
 public class CategoryRepository : ICategoryRepository
 {
@@ -73,7 +72,8 @@ public class CategoryRepository : ICategoryRepository
             var category = _dbContext.Categories!.FirstOrDefault(c => c.Id == obj.Id);
 
             if (category is null)
-                throw new NotFoundException("");
+                //throw new NotFoundException("");
+                throw new Exception();
 
             category.Name = obj.Name;
             category.UpdatedTime = DateTime.Now;
@@ -133,8 +133,9 @@ public class CategoryRepository : ICategoryRepository
         {
             var result = await _dbContext.Categories!.FirstOrDefaultAsync(p => p.Name == name);
 
-            if(result is not null)
-                throw new DuplicationException(name!);
+            if (result is not null)
+                //throw new DuplicationException(name!);
+                throw new Exception();
 
             return result;
         }
@@ -152,7 +153,7 @@ public class CategoryRepository : ICategoryRepository
 
             if (result is not null)
             {
-                if(result.Id != id)
+                if (result.Id != id)
                     throw new DuplicationException(name!);
             }                
 

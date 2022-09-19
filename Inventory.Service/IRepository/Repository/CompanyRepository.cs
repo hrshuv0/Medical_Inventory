@@ -1,11 +1,9 @@
-﻿using Medical_Inventory.Exceptions;
-using Medical_Inventory.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Data;
-using Entities;
+﻿using Entities;
 using Inventory.DAL.DbContext;
+using Inventory.Utility.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
-namespace Medical_Inventory.Data.IRepository.Repository;
+namespace Inventory.Service.IRepository.Repository;
 
 public class CompanyRepository : ICompanyRepository
 {

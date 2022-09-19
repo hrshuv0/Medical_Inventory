@@ -1,10 +1,9 @@
 ﻿using Entities;
 using Inventory.DAL.DbContext;
-using Medical_Inventory.Exceptions;
-using Medical_Inventory.Models;
+using Inventory.Utility.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Medical_Inventory.Data.IRepository.Repository;
+namespace Inventory.Service.IRepository.Repository;
 
 public class GenericRepository : IGenericRepository
 {

@@ -27,6 +27,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Entities\Entities.csproj" />
     <ProjectReference Include="..\Inventory.DAL\Inventory.DAL.csproj" />
+    <ProjectReference Include="..\Inventory.Service\Inventory.Service.csproj" />
+    <ProjectReference Include="..\Inventory.Utility\Inventory.Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data" />
   </ItemGroup>
 
 </Project>

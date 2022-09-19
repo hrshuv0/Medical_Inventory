@@ -1,4 +1,4 @@
-﻿namespace Medical_Inventory.Exceptions
+﻿namespace Inventory.Utility.Exceptions
 {
     public class DuplicationException : Exception
     {

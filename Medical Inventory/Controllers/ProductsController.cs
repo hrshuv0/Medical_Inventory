@@ -1,15 +1,14 @@
 using System.Security.Claims;
 using Entities;
 using Inventory.DAL;
+using Inventory.Service.IRepository;
+using Inventory.Utility.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Medical_Inventory.Data;
-using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Models;
 using Medical_Inventory.Models.ViewModel;
 using Microsoft.AspNetCore.Authorization;
-using Medical_Inventory.Exceptions;
 
 namespace Medical_Inventory.Controllers;
 

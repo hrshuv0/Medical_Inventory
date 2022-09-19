@@ -1,8 +1,8 @@
-﻿using Medical_Inventory.Data.IRepository;
-using Medical_Inventory.Models;
+﻿using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Entities;
+using Inventory.Service.IRepository;
 
 namespace Medical_Inventory.Controllers;
 

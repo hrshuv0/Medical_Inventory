@@ -1,14 +1,11 @@
-using Medical_Inventory.Data;
-using Microsoft.AspNetCore.Mvc;
-using Medical_Inventory.Data.IRepository;
-using Medical_Inventory.Models;
-using Microsoft.AspNetCore.Authorization;
-using Medical_Inventory.Data.IRepository.Repository;
-using System.Data;
-using Medical_Inventory.Exceptions;
+
 using System.Security.Claims;
 using Entities;
 using Inventory.DAL;
+using Inventory.Service.IRepository;
+using Inventory.Utility.Exceptions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Medical_Inventory.Controllers;
 

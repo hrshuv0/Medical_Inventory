@@ -1,7 +1,6 @@
 ﻿using Entities;
-using Medical_Inventory.Models;
 
-namespace Medical_Inventory.Data.IRepository;
+namespace Inventory.Service.IRepository;
 
 
 public interface IPatientGroupRepository

@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Medical_Inventory.Data;
-using Medical_Inventory.Data.IRepository;
-using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Authorization;
-using Medical_Inventory.Data.IRepository.Repository;
-using Medical_Inventory.Exceptions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using System.Security.Claims;
 using Entities;
+using Inventory.Service.IRepository;
+using Inventory.Utility.Exceptions;
 
 namespace Medical_Inventory.Controllers;
 

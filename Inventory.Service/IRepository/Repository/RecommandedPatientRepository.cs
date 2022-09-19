@@ -1,6 +1,6 @@
 ﻿using Inventory.DAL.DbContext;
 
-namespace Medical_Inventory.Data.IRepository.Repository;
+namespace Inventory.Service.IRepository.Repository;
 
 public class RecommendedPatientRepository : IRecommendedPatientRepository
 {

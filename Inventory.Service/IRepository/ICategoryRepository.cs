@@ -1,8 +1,6 @@
-﻿using Medical_Inventory.Models;
-using System.Linq.Expressions;
-using Entities;
+﻿using Entities;
 
-namespace Medical_Inventory.Data.IRepository;
+namespace Inventory.Service.IRepository;
 
 public interface ICategoryRepository
 {
