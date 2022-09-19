@@ -1,10 +1,8 @@
-﻿using Medical_Inventory.Models;
+﻿using Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
-using Entities;
 
-namespace Medical_Inventory.Data;
+namespace Inventory.DAL.DbContext;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, long>
 {

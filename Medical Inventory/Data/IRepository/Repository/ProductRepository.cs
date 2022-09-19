@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Inventory.DAL.DbContext;
 using Medical_Inventory.Exceptions;
 using Medical_Inventory.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -88,9 +89,8 @@ public class ProductRepository : IProductRepository
                 .Include(p => p.Company)
                 .Include(p => p.RecommandedPatients)!
                 .ThenInclude(r => r.PatientGroup)
-                .DefaultIfEmpty()
                 .ToListAsync();
-
+                
                 return productList;
             }
             else
@@ -102,7 +102,6 @@ public class ProductRepository : IProductRepository
                 .Include(p => p.RecommandedPatients)!
                 .ThenInclude(r => r.PatientGroup)
                 .Where(p => p.CategoryId == categoryId)
-                .DefaultIfEmpty()
                 .ToListAsync();
 
                 return productList;

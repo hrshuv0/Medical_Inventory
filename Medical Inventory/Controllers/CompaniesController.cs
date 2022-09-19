@@ -8,6 +8,7 @@ using System.Data;
 using Medical_Inventory.Exceptions;
 using System.Security.Claims;
 using Entities;
+using Inventory.DAL;
 
 namespace Medical_Inventory.Controllers;
 

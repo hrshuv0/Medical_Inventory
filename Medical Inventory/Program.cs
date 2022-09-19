@@ -1,11 +1,14 @@
+using System.Reflection;
 using Entities;
+using Inventory.DAL.DbContext;
+using Inventory.DAL.Seed;
 using Medical_Inventory.Data;
 using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Data.IRepository.Repository;
-using Medical_Inventory.Data.Seed;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,12 +17,14 @@ builder.Services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+        options.SerializerSettings.NullValueHandling = NullValueHandling.Include;
     });
 
+var assemblyName = Assembly.GetExecutingAssembly().FullName;
 var connectionSting = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(connectionSting);
+    options.UseSqlServer(connectionSting, m => m.MigrationsAssembly(assemblyName));
 });
 
 

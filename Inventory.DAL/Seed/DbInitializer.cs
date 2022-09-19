@@ -1,9 +1,11 @@
 ﻿using Entities;
-using Medical_Inventory.Models;
+using Inventory.DAL.DbContext;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Medical_Inventory.Data.Seed;
+namespace Inventory.DAL.Seed;
 
 public static class DbInitializer
 {

@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Inventory.DAL.DbContext;
 using Medical_Inventory.Exceptions;
 using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,6 @@ public class CategoryRepository : ICategoryRepository
             var category = await _dbContext.Categories!
                 .Include(c => c.CreatedBy)
                 .Include(c => c.UpdatedBy)
-                .DefaultIfEmpty()
                 .FirstOrDefaultAsync(c => c.Id == id)!;
 
             return category;
@@ -42,8 +42,7 @@ public class CategoryRepository : ICategoryRepository
         {
             var categoryList = await _dbContext.Categories!
                 .Include(c => c.CreatedBy)
-                .Include(c => c.UpdatedBy)
-                .DefaultIfEmpty().ToListAsync();
+                .Include(c => c.UpdatedBy).ToListAsync();
 
             return categoryList;
         }

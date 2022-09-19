@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Entities;
+using Inventory.DAL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;

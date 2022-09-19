@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Inventory.DAL.DbContext;
 using Medical_Inventory.Exceptions;
 using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +36,6 @@ public class PatientGroupRepository : IPatientGroupRepository
             var pGroup = await _dbContext.PatientGroup!
                 .Include(p => p.CreatedBy)
                 .Include(p => p.UpdatedBy)
-                .DefaultIfEmpty()
                 .ToListAsync();
 
             return pGroup;

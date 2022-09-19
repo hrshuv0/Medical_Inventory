@@ -3,6 +3,7 @@ using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using Entities;
+using Inventory.DAL.DbContext;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
 
@@ -41,8 +42,7 @@ public class CompanyRepository : ICompanyRepository
     {
         var result = _dbContext.Company!
             .Include(c => c.UpdatedBy)
-            .Include(c => c.CreatedBy)
-            .DefaultIfEmpty();
+            .Include(c => c.CreatedBy);
 
         var data = await result.ToListAsync();
 

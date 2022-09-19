@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Inventory.DAL;
 using Medical_Inventory.Data;
 using Medical_Inventory.Models;
 using Medical_Inventory.Models.ViewModel.AuthViewModel;

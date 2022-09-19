@@ -1,4 +1,4 @@
-﻿namespace Medical_Inventory.Data;
+﻿namespace Inventory.DAL;
 
 public static class StaticData
 {

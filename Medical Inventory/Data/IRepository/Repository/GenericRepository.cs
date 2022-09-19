@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Inventory.DAL.DbContext;
 using Medical_Inventory.Exceptions;
 using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,6 @@ public class GenericRepository : IGenericRepository
         var result = _dbContext.Generic!
             .Include(c => c.CreatedBy)
             .Include(c => c.UpdatedBy)
-            .DefaultIfEmpty()
             .FirstOrDefaultAsync(c => c.Id == id);
 
         return result;
@@ -32,9 +32,9 @@ public class GenericRepository : IGenericRepository
         var result = _dbContext.Generic!
             .Include(c => c.CreatedBy)
             .Include(c => c.UpdatedBy)
-            .DefaultIfEmpty();
+            .ToListAsync();
 
-        var data = await result.ToListAsync();
+        var data = await result;
 
         return data;
     }
