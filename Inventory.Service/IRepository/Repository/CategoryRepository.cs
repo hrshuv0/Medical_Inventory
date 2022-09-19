@@ -26,14 +26,15 @@ public class CategoryRepository : ICategoryRepository
                 .Include(c => c.UpdatedBy)
                 .FirstOrDefaultAsync(c => c.Id == id)!;
 
+            if(category == null)
+                throw new NotFoundException();
+
             return category;
         }
         catch (Exception)
         {
-            // ignored
+            throw;
         }
-
-        return null;
     }
     public async Task<IEnumerable<Category>?>? GetAll()
     {
@@ -47,9 +48,8 @@ public class CategoryRepository : ICategoryRepository
         }
         catch (Exception)
         {
-
+            throw;
         }
-        return null;
     }
 
     public async Task Add(Category entity)

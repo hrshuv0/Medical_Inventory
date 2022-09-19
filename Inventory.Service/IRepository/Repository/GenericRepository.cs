@@ -14,14 +14,16 @@ public class GenericRepository : IGenericRepository
         _dbContext = dbContext;
     }
 
-    public Task<Generic?>? GetFirstOrDefault(long? id)
+    public async Task<Generic?>? GetFirstOrDefault(long? id)
     {
         if (id is null) return null;
 
-        var result = _dbContext.Generic!
+        var result = await _dbContext.Generic!
             .Include(c => c.CreatedBy)
             .Include(c => c.UpdatedBy)
             .FirstOrDefaultAsync(c => c.Id == id);
+
+        if(result == null) throw new NotFoundException();
 
         return result;
     }

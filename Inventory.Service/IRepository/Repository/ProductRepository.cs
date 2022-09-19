@@ -63,10 +63,16 @@ public class ProductRepository : IProductRepository
                 .ThenInclude(r => r.PatientGroup)
                 .AsNoTracking()
                 .Where(p => p.Id == id)
-                .DefaultIfEmpty()
                 .FirstOrDefaultAsync();
 
+            if (product is null)
+                throw new NotFoundException();
+
             return product;
+        }
+        catch(NotFoundException ex)
+        {
+            throw ex;
         }
         catch (Exception)
         {

@@ -93,14 +93,16 @@ public class PatientGroupRepository : IPatientGroupRepository
                 .Include(p => p.UpdatedBy)
                 .DefaultIfEmpty().FirstOrDefaultAsync(c => c.Id == id)!;
 
+            if (pGroup == null)
+                throw new NotFoundException();
+
             return pGroup;
         }
         catch (Exception)
         {
-            // ignored
+            throw;
         }
 
-        return null;
     }
 
     public void Remove(long id)
