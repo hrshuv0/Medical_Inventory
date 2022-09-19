@@ -1,8 +1,8 @@
+using Entities;
 using Medical_Inventory.Data;
 using Medical_Inventory.Data.IRepository;
 using Medical_Inventory.Data.IRepository.Repository;
 using Medical_Inventory.Data.Seed;
-using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

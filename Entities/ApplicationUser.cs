@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Identity;
 
-namespace Medical_Inventory.Models;
+namespace Entities;
 
 
 public class ApplicationUser : IdentityUser<long>

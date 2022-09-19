@@ -1,4 +1,4 @@
-﻿namespace Medical_Inventory.Models;
+﻿namespace Entities;
 
 public class RecommandedPatient
 {

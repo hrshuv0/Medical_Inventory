@@ -2,6 +2,7 @@
 using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Entities;
 
 namespace Medical_Inventory.Controllers;
 

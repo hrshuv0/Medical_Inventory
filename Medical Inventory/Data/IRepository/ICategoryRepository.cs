@@ -1,5 +1,6 @@
 ﻿using Medical_Inventory.Models;
 using System.Linq.Expressions;
+using Entities;
 
 namespace Medical_Inventory.Data.IRepository;
 

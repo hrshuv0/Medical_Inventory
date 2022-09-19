@@ -5,6 +5,7 @@ using Medical_Inventory.Models;
 using Microsoft.AspNetCore.Authorization;
 using Medical_Inventory.Exceptions;
 using System.Security.Claims;
+using Entities;
 
 namespace Medical_Inventory.Controllers;
 

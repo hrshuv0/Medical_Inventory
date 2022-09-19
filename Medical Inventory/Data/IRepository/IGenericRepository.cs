@@ -1,4 +1,5 @@
-﻿using Medical_Inventory.Models;
+﻿using Entities;
+using Medical_Inventory.Models;
 
 namespace Medical_Inventory.Data.IRepository;
 

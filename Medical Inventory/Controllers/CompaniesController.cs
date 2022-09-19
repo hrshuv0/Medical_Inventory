@@ -7,6 +7,7 @@ using Medical_Inventory.Data.IRepository.Repository;
 using System.Data;
 using Medical_Inventory.Exceptions;
 using System.Security.Claims;
+using Entities;
 
 namespace Medical_Inventory.Controllers;
 

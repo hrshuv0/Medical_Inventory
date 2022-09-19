@@ -1,4 +1,5 @@
-﻿using Medical_Inventory.Exceptions;
+﻿using Entities;
+using Medical_Inventory.Exceptions;
 using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Medical_Inventory.Models.ViewModel;
 

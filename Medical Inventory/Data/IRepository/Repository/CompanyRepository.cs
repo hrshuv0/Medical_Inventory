@@ -2,6 +2,7 @@
 using Medical_Inventory.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using Entities;
 
 namespace Medical_Inventory.Data.IRepository.Repository;
 

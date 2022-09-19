@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace Medical_Inventory.Models
+namespace Entities
 {
-    public class PatientGroup
+    public class Generic
     {
         public long Id { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(30)]
         public string Name { get; set; }
 
         public DateTime CreatedTime { get; set; }
@@ -25,7 +25,8 @@ namespace Medical_Inventory.Models
         [ValidateNever]
         public ApplicationUser? UpdatedBy { get; set; }
 
-        public IList<RecommandedPatient>? RecommandedPatients { get; set; }
+        [ValidateNever]
+        public IEnumerable<Product>? Products { get; set; }
 
     }
 }

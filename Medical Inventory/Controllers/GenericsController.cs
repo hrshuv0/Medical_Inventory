@@ -13,6 +13,7 @@ using Medical_Inventory.Data.IRepository.Repository;
 using Medical_Inventory.Exceptions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using System.Security.Claims;
+using Entities;
 
 namespace Medical_Inventory.Controllers;
 
